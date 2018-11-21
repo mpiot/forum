@@ -1,41 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Category index{% endblock %}
+{% block title %}Forum{% endblock %}
 
 {% block body %}
-    <h1>Category index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Position</th>
-                <th>Parent</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.title }}</td>
-                <td>{{ category.description }}</td>
-                <td>{{ category.position }}</td>
-                <td>{{ category.parent is not null ? category.parent.title : '-' }}</td>
-                <td>
-                    <a href="{{ path('category_show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path('category_edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('category_new') }}">Create new</a>
+    <div class="row">
+        <div class="col-12">
+            {% for category in categories %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        {{ category.title }}<br>
+                        {{ category.description }}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for subCategory in category.children %}
+                            <li class="list-group-item">
+                                <span class="fa-stack fa-1x align-middle">
+                                  <i class="far fa-circle fa-stack-2x"></i>
+                                  <i class="fas fa-list-ul fa-stack-1x"></i>
+                                </span>
+                                <span>
+                                    <a href="{{ path('category_show', {'id': subCategory.id}) }}">{{ subCategory.title }}</a><br>
+                                    {{ subCategory.description }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

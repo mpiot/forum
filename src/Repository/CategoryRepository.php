@@ -19,7 +19,7 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    public function findAllSorted()
+    public function findMainCategoriesWithSub()
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.parent', 'parent')
@@ -30,6 +30,18 @@ class CategoryRepository extends ServiceEntityRepository
             ->addOrderBy('children.position', 'ASC')
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function findSubCategory(int $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.parent', 'parent')
+            ->where('c.id = :id')
+                ->setParameter('id', $id)
+            ->andWhere('c.parent is not NULL')
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 }

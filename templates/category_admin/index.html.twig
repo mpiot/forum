@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category index{% endblock %}
+
+{% block body %}
+    <h1>Category index</h1>
+
+    <div class="row mb-3">
+        <div class="col">
+            <a class="btn btn-primary" href="{{ path('category_admin_new') }}">
+                <i class="fas fa-plus"></i> Create new
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.title }}</td>
+                        <td>{{ category.description }}</td>
+                        <td class="text-right">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                {% embed 'category_admin/_delete_form.html.twig' %}
+                                    {% block buttons %}
+                                        <a class="btn btn-warning" href="{{ path('category_admin_edit', {'id': category.id}) }}" role="button">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {{ parent() }}
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                        </td>
+                        {% for subCategory in category.children %}
+                            <tr>
+                                <td class="pl-5">{{ subCategory.title }}</td>
+                                <td>{{ subCategory.description }}</td>
+                                <td class="text-right">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        {% embed 'category_admin/_delete_form.html.twig' with { 'category': subCategory } %}
+                                            {% block buttons %}
+                                                <a class="btn btn-warning" href="{{ path('category_admin_edit', {'id': subCategory.id}) }}" role="button">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                {{ parent() }}
+                                            {% endblock %}
+                                        {% endembed %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
