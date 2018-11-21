@@ -11,6 +11,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Category
 {
@@ -41,12 +42,12 @@ class Category
     private $position;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="parent", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="parent")
      */
     private $children;
 
@@ -125,5 +126,18 @@ class Category
     public function isSubCategory(): bool
     {
         return !$this->isMainCategory();
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function removeParent()
+    {
+        // On remove, we delete a MainCategory, pass all children as mainCategory
+        if ($this->isMainCategory()) {
+            foreach ($this->children as $category) {
+                $category->setParent(null);
+            }
+        }
     }
 }
