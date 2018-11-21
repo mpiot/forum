@@ -1,0 +1,13 @@
+{% for category in categories %}
+    <p>
+        {{ category.title }}<br>
+        {{ category.description }}
+    </p>
+
+    {% for subCategory in category.children %}
+        <p>
+            {{ subCategory.title }}<br>
+            {{ subCategory.description }}
+        </p>
+    {% endfor %}
+{% endfor %}
