@@ -1,4 +1,8 @@
 
+###> app/docker ###
+docker-compose.override.yml.dist
+###< app/docker ###
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.*.local
