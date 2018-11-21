@@ -1,0 +1,24 @@
+{% macro categoryTree(categories) %}
+    {% import _self as tree %}
+
+    <ul>
+        {% for category in categories %}
+            <li>
+                {{ category.title }}
+
+                {% embed 'category_admin/_delete_form.html.twig' %}
+                    {% block buttons %}
+                        <a class="btn btn-secondary" href="{{ path('category_move_up', { 'id': category.id }) }}"><span class="fa fa-arrow-up"></span></a>
+                        <a class="btn btn-secondary" href="{{ path('category_move_down', { 'id': category.id }) }}"><span class="fa fa-arrow-down"></span></a>
+                        <a class="btn btn-warning" href="{{ path('category_admin_edit', {'id': category.id}) }}"><span class="fas fa-edit"></span> Edit</a>
+                        {{ parent() }}
+                    {% endblock %}
+                {% endembed %}
+
+                {% if category.__children %}
+                    {{ tree.categoryTree(category.__children) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}

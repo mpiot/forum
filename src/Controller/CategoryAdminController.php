@@ -20,7 +20,6 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,10 +32,15 @@ class CategoryAdminController extends AbstractController
 {
     /**
      * @Route("/", name="category_admin_index", methods="GET")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findMainCategoriesWithSub()")
      */
-    public function index(array $categories): Response
+    public function index(): Response
     {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('App:Category');
+        $rootNode = $repo->find(1);
+        $categories = $repo->getNodesHierarchy($rootNode);
+        $categories = $repo->buildTreeArray($categories);
+
         return $this->render('category_admin/index.html.twig', ['categories' => $categories]);
     }
 
@@ -93,6 +97,32 @@ class CategoryAdminController extends AbstractController
             $em->remove($category);
             $em->flush();
         }
+
+        return $this->redirectToRoute('category_admin_index');
+    }
+
+    /**
+     * @Route("/{id}/move-up", name="category_move_up", methods="GET")
+     */
+    public function moveUp(Category $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Category::class);
+
+        $repository->moveUp($category, 1);
+
+        return $this->redirectToRoute('category_admin_index');
+    }
+
+    /**
+     * @Route("/{id}/move-down", name="category_move_down", methods="GET")
+     */
+    public function moveDown(Category $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Category::class);
+
+        $repository->moveDown($category, 1);
 
         return $this->redirectToRoute('category_admin_index');
     }

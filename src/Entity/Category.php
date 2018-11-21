@@ -24,8 +24,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Tree\Traits\NestedSetEntity;
 
 /**
+ * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -33,6 +35,7 @@ class Category
 {
     use BlameableEntity;
     use TimestampableEntity;
+    use NestedSetEntity;
 
     /**
      * @ORM\Id()
@@ -52,18 +55,15 @@ class Category
     private $description;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
-     */
-    private $position;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     * @ORM\OrderBy({"left" = "ASC"})
      */
     private $children;
 
@@ -101,21 +101,14 @@ class Category
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getRoot(): ?string
     {
-        return $this->position;
+        return $this->root;
     }
 
-    public function setPosition(int $position): self
+    public function getLevel(): ?int
     {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    public function getParent(): ?self
-    {
-        return $this->parent;
+        return $this->level;
     }
 
     public function setParent(?self $parent): self
@@ -125,7 +118,12 @@ class Category
         return $this;
     }
 
-    public function getChildren(): Collection
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function getChildren(): ?Collection
     {
         return $this->children;
     }

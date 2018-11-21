@@ -28,7 +28,7 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("/", name="category_index")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findMainCategoriesWithSub()")
+     * @Entity("categories", class="App\Entity\Category", expr="repository.findAllMainCategoriesWithSub()")
      */
     public function forum(array $categories): Response
     {

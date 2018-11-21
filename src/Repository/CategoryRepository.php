@@ -19,8 +19,8 @@
 namespace App\Repository;
 
 use App\Entity\Category;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @method Category|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,22 +28,24 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Category[]    findAll()
  * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoryRepository extends ServiceEntityRepository
+class CategoryRepository extends NestedTreeRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($registry, Category::class);
+        $classMetaData = $em->getClassMetadata(Category::class);
+
+        parent::__construct($em, $classMetaData);
     }
 
-    public function findMainCategoriesWithSub()
+    public function findAllMainCategoriesWithSub()
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.parent', 'parent')
             ->leftJoin('c.children', 'children')
                 ->addSelect('children')
-            ->where('c.parent is NULL')
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('children.position', 'ASC')
+            ->where('c.level = 1')
+            ->orderBy('c.left', 'ASC')
+            ->addOrderBy('children.left', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -55,7 +57,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->leftJoin('c.parent', 'parent')
             ->where('c.id = :id')
                 ->setParameter('id', $id)
-            ->andWhere('c.parent is not NULL')
+            ->andWhere('c.level = 2')
             ->getQuery()
             ->getOneOrNullResult()
         ;
