@@ -37,12 +37,14 @@ class CategoryRepository extends NestedTreeRepository
         parent::__construct($em, $classMetaData);
     }
 
-    public function findAllMainCategoriesWithSub()
+    public function findMainCategoriesWithSub()
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.parent', 'parent')
             ->leftJoin('c.children', 'children')
                 ->addSelect('children')
+            ->leftJoin('children.children', 'sub_children')
+                ->addSelect('sub_children')
             ->where('c.level = 1')
             ->orderBy('c.left', 'ASC')
             ->addOrderBy('children.left', 'ASC')
@@ -54,10 +56,13 @@ class CategoryRepository extends NestedTreeRepository
     public function findSubCategory(int $id)
     {
         return $this->createQueryBuilder('c')
-            ->leftJoin('c.parent', 'parent')
+            ->leftJoin('c.children', 'children')
+                ->addSelect('children')
+            ->leftJoin('children.children', 'sub_children')
+                ->addSelect('sub_children')
             ->where('c.id = :id')
                 ->setParameter('id', $id)
-            ->andWhere('c.level = 2')
+            ->andWhere('c.level > 1')
             ->getQuery()
             ->getOneOrNullResult()
         ;

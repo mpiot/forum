@@ -94,7 +94,7 @@ class Category
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -140,6 +140,11 @@ class Category
     public function isSubCategory(): bool
     {
         return !$this->isMainCategory();
+    }
+
+    public function hasChildren(): bool
+    {
+        return !$this->children->isEmpty();
     }
 
     /**

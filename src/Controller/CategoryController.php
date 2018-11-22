@@ -28,9 +28,9 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("/", name="category_index")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findAllMainCategoriesWithSub()")
+     * @Entity("categories", class="App\Entity\Category", expr="repository.findMainCategoriesWithSub()")
      */
-    public function forum(array $categories): Response
+    public function index(array $categories): Response
     {
         return $this->render('category/index.html.twig', [
             'categories' => $categories,

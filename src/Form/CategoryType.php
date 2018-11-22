@@ -46,7 +46,6 @@ class CategoryType extends AbstractType
                         ->orderBy('category.left', 'ASC')
                         ->where('category.root = 1')
                         ->andWhere('category.level != 0')
-                        ->andWhere('category.level < 2')
                     ;
                 },
                 'choice_label' => function (Category $category) {
