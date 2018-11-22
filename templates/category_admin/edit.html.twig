@@ -2,19 +2,15 @@
 
 {% block title %}Edit Category{% endblock %}
 
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item">Administration</li>
+    <li class="breadcrumb-item"><a href="{{ path('category_admin_index') }}">Category</a></li>
+    <li class="breadcrumb-item active">Edit</li>
+{% endblock %}
+
 {% block body %}
     <h1>Edit Category</h1>
 
     {{ include('category_admin/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <div class="mt-3">
-        {% embed 'category_admin/_delete_form.html.twig' %}
-            {% block buttons %}
-                <a class="btn btn-secondary" href="{{ path('category_admin_index') }}" role="button">
-                    <i class="fas fa-chevron-left"></i> Back
-                </a>
-                {{ parent() }}
-            {% endblock %}
-        {% endembed %}
-    </div>
 {% endblock %}

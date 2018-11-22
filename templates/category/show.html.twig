@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
+{% import 'category/_category_breadcrumb.html.twig' as breadcrumb %}
 
 {% block title %}{{ category.title }} - {{ parent() }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category) }}
+{% endblock %}
 
 {% block body %}
     <div class="row">

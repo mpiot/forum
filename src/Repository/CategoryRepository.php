@@ -56,6 +56,8 @@ class CategoryRepository extends NestedTreeRepository
     public function findSubCategory(int $id)
     {
         return $this->createQueryBuilder('c')
+            ->leftJoin('c.parent', 'parent')
+                ->addSelect('parent')
             ->leftJoin('c.children', 'children')
                 ->addSelect('children')
             ->leftJoin('children.children', 'sub_children')

@@ -3,6 +3,12 @@
 
 {% block title %}Category index{% endblock %}
 
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item">Administration</li>
+    <li class="breadcrumb-item active">Category</li>
+{% endblock %}
+
 {% block body %}
     <h1>Category index</h1>
 

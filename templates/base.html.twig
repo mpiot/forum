@@ -39,6 +39,14 @@
         </nav>
 
         <main role="main" class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% block breadcrumb %}
+                        <li class="breadcrumb-item"><a href="{{ path('category_index') }}"><i class="fas fa-home"></i> Home</a></li>
+                    {% endblock %}
+                </ol>
+            </nav>
+
             {% block body %}{% endblock %}
         </main>
 
