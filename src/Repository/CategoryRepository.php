@@ -53,20 +53,36 @@ class CategoryRepository extends NestedTreeRepository
         ;
     }
 
-    public function findSubCategory(int $id)
+    public function findSubCategoryWithAllParentAndChildren(int $id)
     {
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.parent', 'parent')
-                ->addSelect('parent')
-            ->leftJoin('c.children', 'children')
-                ->addSelect('children')
-            ->leftJoin('children.children', 'sub_children')
-                ->addSelect('sub_children')
-            ->where('c.id = :id')
-                ->setParameter('id', $id)
-            ->andWhere('c.level > 1')
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $category = $this->find($id);
+
+        if (null !== $category) {
+            $id = $category->getId();
+
+            $builder = $this->createQueryBuilder('category')
+                ->leftJoin('category.parent', 'parent_0')
+                    ->addSelect('parent_0');
+            ;
+
+            for ($i = 1; $i < $category->getLevel(); ++$i) {
+                $builder
+                    ->leftJoin('parent_'.($i - 1).'.parent', 'parent_'.$i)
+                        ->addSelect('parent_'.$i);
+            }
+
+            $builder
+                ->leftJoin('category.children', 'children')
+                    ->addSelect('children')
+                ->leftJoin('children.children', 'sub_children')
+                    ->addSelect('sub_children')
+                ->where('category.id = :id')
+                    ->setParameter('id', $id)
+                ->andWhere('category.level > 1');
+
+            $category = $builder->getQuery()->getOneOrNullResult();
+        }
+
+        return $category;
     }
 }
