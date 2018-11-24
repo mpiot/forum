@@ -63,7 +63,6 @@ class CategoryRepository extends NestedTreeRepository
             $builder = $this->createQueryBuilder('category')
                 ->leftJoin('category.parent', 'parent_0')
                     ->addSelect('parent_0');
-            ;
 
             for ($i = 1; $i < $category->getLevel(); ++$i) {
                 $builder
