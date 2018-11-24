@@ -53,9 +53,9 @@ class CategoryRepository extends NestedTreeRepository
         ;
     }
 
-    public function findSubCategoryWithAllParentAndChildren(int $id)
+    public function findSubCategoryWithAllParentAndChildren(string $slug)
     {
-        $category = $this->find($id);
+        $category = $this->findOneBySlug($slug);
 
         if (null !== $category) {
             $id = $category->getId();
