@@ -1,0 +1,8 @@
+{% macro categoryBreadcrumb(category) %}
+    {% import _self as breadcrumb %}
+
+    {% if category.parent is not null and category.parent.isSubCategory %}
+        {{ breadcrumb.categoryBreadcrumb(category.parent) }}
+        <li class="breadcrumb-item"><a href="{{ path('category_show', { 'id': category.id }) }}">{{ category.title }}</a></li>
+    {% endif %}
+{% endmacro %}
