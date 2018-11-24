@@ -75,6 +75,9 @@ db-reset: vendor wait-for-db                                                    
 	$(EXEC) $(CONSOLE) doctrine:database:create --if-not-exists
 	$(EXEC) $(CONSOLE) doctrine:migrations:migrate -n
 
+db-fixtures: vendor wait-for-db                                                                        ## Apply doctrine fixtures
+	$(EXEC) $(CONSOLE) doctrine:fixtures:load -n
+
 db-validate: vendor wait-for-db                                                                        ## Check the ORM mapping
 	$(EXEC) $(CONSOLE) doctrine:schema:validate
 

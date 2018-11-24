@@ -44,8 +44,7 @@ class CategoryType extends AbstractType
                 'query_builder' => function (CategoryRepository $er) {
                     return $er->createQueryBuilder('category')
                         ->orderBy('category.left', 'ASC')
-                        ->where('category.root = 1')
-                        ->andWhere('category.level != 0')
+                        ->where('category.parent IS NOT NULL')
                     ;
                 },
                 'choice_label' => function (Category $category) {
