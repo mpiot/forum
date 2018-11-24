@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="d-inline-block align-middle ml-2">
-                    <a href="{{ path('category_show', {'id': subCategory.id}) }}">{{ subCategory.title }}</a>
+                    <a href="{{ path('category_show', {'slug': subCategory.slug}) }}">{{ subCategory.title }}</a>
                     {% if subCategory.description is not null %}
                         <div class="text-muted">{{ subCategory.description }}</div>
                     {% endif %}
@@ -22,7 +22,7 @@
                         <div class="small">
                             <span>Subforums: </span>
                             {% for subSubCategory in subCategory.children %}
-                                <a href="{{ path('category_show', {'id': subSubCategory.id}) }}">{{ subSubCategory.title }}</a>{{ not loop.last ? ', ' }}
+                                <a href="{{ path('category_show', {'slug': subSubCategory.slug}) }}">{{ subSubCategory.title }}</a>{{ not loop.last ? ', ' }}
                             {% endfor %}
                         </div>
                     {% endif %}

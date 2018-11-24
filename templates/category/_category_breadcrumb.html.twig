@@ -3,6 +3,6 @@
 
     {% if category.parent is not null and category.parent.isSubCategory %}
         {{ breadcrumb.categoryBreadcrumb(category.parent) }}
-        <li class="breadcrumb-item"><a href="{{ path('category_show', { 'id': category.id }) }}">{{ category.title }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('category_show', { 'slug': category.slug }) }}">{{ category.title }}</a></li>
     {% endif %}
 {% endmacro %}

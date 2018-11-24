@@ -38,8 +38,8 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/category/{id}", name="category_show", methods="GET")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findSubCategoryWithAllParentAndChildren(id)")
+     * @Route("/forum/{slug}", name="category_show", methods="GET")
+     * @Entity("categories", class="App\Entity\Category", expr="repository.findSubCategoryWithAllParentAndChildren(slug)")
      */
     public function show(Category $category): Response
     {

@@ -45,7 +45,7 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $title;
 
@@ -66,6 +66,12 @@ class Category
      * @ORM\OrderBy({"left" = "ASC"})
      */
     private $children;
+
+    /**
+     * @Gedmo\Slug(fields={"title"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -145,6 +151,11 @@ class Category
     public function hasChildren(): bool
     {
         return !$this->children->isEmpty();
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     /**
