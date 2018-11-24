@@ -20,6 +20,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
@@ -37,51 +38,109 @@ class CategoryRepository extends NestedTreeRepository
         parent::__construct($em, $classMetaData);
     }
 
-    public function findMainCategoriesWithSub()
+    public function findForCategoryIndex()
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.parent', 'parent')
-            ->leftJoin('c.children', 'children')
-                ->addSelect('children')
+            ->innerJoin('c.children', 'children')
+            ->addSelect('children')
             ->leftJoin('children.children', 'sub_children')
-                ->addSelect('sub_children')
+            ->addSelect('sub_children')
+            ->leftJoin('children.lastActiveThread', 'last_active_thread')
+            ->addSelect('last_active_thread')
+            ->leftJoin('last_active_thread.category', 'last_active_thread_category')
+            ->addSelect('last_active_thread_category')
             ->where('c.level = 1')
             ->orderBy('c.left', 'ASC')
             ->addOrderBy('children.left', 'ASC')
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
 
-    public function findSubCategoryWithAllParentAndChildren(string $slug)
+    public function findForCategoryShow(string $slug)
     {
         $category = $this->findOneBySlug($slug);
 
         if (null !== $category) {
             $id = $category->getId();
 
-            $builder = $this->createQueryBuilder('category')
-                ->leftJoin('category.parent', 'parent_0')
-                    ->addSelect('parent_0');
-
-            for ($i = 1; $i < $category->getLevel(); ++$i) {
-                $builder
-                    ->leftJoin('parent_'.($i - 1).'.parent', 'parent_'.$i)
-                        ->addSelect('parent_'.$i);
-            }
+            $builder = $this->createQueryBuilder('category');
+            $builder = $this->addAllParents($builder, $category->getLevel());
 
             $builder
                 ->leftJoin('category.children', 'children')
-                    ->addSelect('children')
+                ->addSelect('children')
                 ->leftJoin('children.children', 'sub_children')
-                    ->addSelect('sub_children')
+                ->addSelect('sub_children')
+                ->leftJoin('children.lastActiveThread', 'last_active_thread')
+                ->addSelect('last_active_thread')
+                ->leftJoin('last_active_thread.category', 'last_active_thread_category')
+                ->addSelect('last_active_thread_category')
                 ->where('category.id = :id')
-                    ->setParameter('id', $id)
-                ->andWhere('category.level > 1');
+                ->setParameter('id', $id);
 
             $category = $builder->getQuery()->getOneOrNullResult();
         }
 
         return $category;
+    }
+
+    public function findForThreadShow(string $slug)
+    {
+        $category = $this->findOneBySlug($slug);
+
+        if (null !== $category) {
+            $id = $category->getId();
+
+            $builder = $this->createQueryBuilder('category');
+            $builder = $this->addAllParents($builder, $category->getLevel());
+
+            $builder
+                ->where('category.id = :id')
+                ->setParameter('id', $id);
+
+            $category = $builder->getQuery()->getOneOrNullResult();
+        }
+
+        return $category;
+    }
+
+    public function findForNewThread(string $slug)
+    {
+        $category = $this->findOneBySlug($slug);
+
+        if (null !== $category) {
+            $id = $category->getId();
+
+            $builder = $this->createQueryBuilder('category');
+            $builder = $this->addAllParents($builder, $category->getLevel());
+
+            $builder
+                ->leftJoin('category.children', 'children')
+                ->addSelect('children')
+                ->where('category.id = :id')
+                ->setParameter('id', $id)
+                ->andWhere('children IS NULL');
+
+            $category = $builder->getQuery()->getOneOrNullResult();
+        }
+
+        return $category;
+    }
+
+    private function addAllParents(QueryBuilder $builder, int $categoryLevel): QueryBuilder
+    {
+        $builder
+            ->leftJoin('category.parent', 'parent_0')
+            ->addSelect('parent_0');
+
+        for ($i = 1; $i < $categoryLevel; ++$i) {
+            $builder
+                ->leftJoin('parent_'.($i - 1).'.parent', 'parent_'.$i)
+                ->addSelect('parent_'.$i);
+        }
+
+        return $builder;
     }
 }

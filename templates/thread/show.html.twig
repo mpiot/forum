@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% import '_category_breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}New post{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category) }}
+    <li class="breadcrumb-item active">{{ thread.subject }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="mb-3">
+        <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+            <span class="fas fa-reply"></span> Reply
+        </a>
+    </div>
+
+    {% if posts.haveToPaginate %}
+        <div class="navigation my-3">
+            {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+        </div>
+    {% endif %}
+
+    {% for post in posts %}
+        <div class="jumbotron p-3">
+            <div class="row">
+                <div class="col-10">
+                    <p>
+                        {% if false == post.isMainPost %}Re: {% endif %}{{ post.thread.subject }}<br>
+                        {{ post.createdAt|date('d/m/Y h:i') }}
+                    </p>
+
+                    <p>
+                        {{ post.message }}
+                    </p>
+                </div>
+
+                <div class="col-2">
+                    {% if true == post.isMainPost %}
+                        {% embed 'thread/_delete_form.html.twig' %}
+                            {% block buttons %}
+                                <a class="btn btn-warning" href="{{ path('thread_edit', { 'categorySlug': category.slug, 'id': post.thread.id, 'slug': post.thread.slug }) }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                {{ parent() }}
+                            {% endblock %}
+                        {% endembed %}
+                    {% else %}
+                        {% embed 'post/_delete_form.html.twig' %}
+                            {% block buttons %}
+                                <a class="btn btn-warning" href="{{ path('post_edit', {'categorySlug': category.slug, 'threadId': thread.id, 'threadSlug': thread.slug, 'id': post.id }) }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                {{ parent() }}
+                            {% endblock %}
+                        {% endembed %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if posts.haveToPaginate %}
+        <div class="navigation my-3">
+            {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+        </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+            <span class="fas fa-reply"></span> Reply
+        </a>
+    </div>
+{% endblock %}

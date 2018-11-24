@@ -1,0 +1,7 @@
+{{ form_start(form) }}
+    {{ form_row(form.subject) }}
+    {{ form_widget(form.firstPost) }}
+
+    {{ form_rest(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
