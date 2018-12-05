@@ -102,7 +102,7 @@ class PostController extends AbstractController
     {
         // The user can't delete a post if it's the first message, delete thread
         if ($post->isMainPost()) {
-            $this->addFlash('error', 'This post can\'t be deleted.');
+            $this->addFlash('danger', 'This post can\'t be deleted.');
         }
 
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {

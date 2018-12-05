@@ -1,0 +1,16 @@
+{% set activationLink = url('user_activation', { 'confirmationToken': user.confirmationToken }) %}
+
+<p>
+    Dear {{ user.email }},<br>
+    We confirm your registration on our forum !
+</p>
+<p>
+    Before start to use the forum you need to confirm your email to validate your account with the link below.
+</p>
+<p>
+    {{ activationLink }}
+</p>
+<p>
+    Best regards,
+    The forum team
+</p>
