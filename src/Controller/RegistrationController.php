@@ -18,14 +18,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\User;
 use App\Events;
-use App\Form\CategoryType;
 use App\Form\RegistrationType;
-use App\Repository\UserRepository;
 use App\Service\UserManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
