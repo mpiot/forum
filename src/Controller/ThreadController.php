@@ -20,6 +20,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Thread;
+use App\Form\ThreadEditType;
 use App\Form\ThreadType;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -81,7 +82,7 @@ class ThreadController extends AbstractController
      */
     public function edit(Category $category, Thread $thread, Request $request): Response
     {
-        $form = $this->createForm(ThreadType::class, $thread);
+        $form = $this->createForm(ThreadEditType::class, $thread);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
