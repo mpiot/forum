@@ -73,9 +73,21 @@ class Category
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Thread", mappedBy="category")
+     */
+    private $threads;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Thread")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+     */
+    private $lastActiveThread;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->threads = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -169,5 +181,48 @@ class Category
                 $category->setParent(null);
             }
         }
+    }
+
+    /**
+     * @return Collection|Thread[]
+     */
+    public function getThreads(): Collection
+    {
+        return $this->threads;
+    }
+
+    public function addThread(Thread $thread): self
+    {
+        if (!$this->threads->contains($thread)) {
+            $this->threads[] = $thread;
+            $thread->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThread(Thread $thread): self
+    {
+        if ($this->threads->contains($thread)) {
+            $this->threads->removeElement($thread);
+            // set the owning side to null (unless already changed)
+            if ($thread->getCategory() === $this) {
+                $thread->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLastActiveThread(): ?Thread
+    {
+        return $this->lastActiveThread;
+    }
+
+    public function setLastActiveThread(?Thread $lastActiveThread): self
+    {
+        $this->lastActiveThread = $lastActiveThread;
+
+        return $this;
     }
 }

@@ -1,0 +1,58 @@
+{% if threads.haveToPaginate %}
+    <div class="navigation my-3">
+        {{ pagerfanta(threads, 'app_pagination', {routeName: 'category_show', routeParams: { 'slug': category.slug }}) }}
+    </div>
+{% endif %}
+
+<table class="table">
+    <thead>
+        <tr class="row">
+            <th class="col-sm-9">{{ category.title }}</th>
+            <th class="col-sm-1 text-center">Answers</th>
+            <th class="col-sm-2">Last message</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for thread in threads %}
+            <tr class="row">
+                <td class="col-sm-9">
+                    <div class="d-inline-block align-middle">
+                        <span class="fa-stack fa-1x">
+                        <i class="far fa-circle fa-stack-2x"></i>
+                        <i class="fas fa-list-ul fa-stack-1x"></i>
+                        </span>
+                    </div>
+
+                    <div class="d-inline-block align-middle ml-2">
+                        <a href="{{ path('thread_show', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                            {{ thread.subject }}
+                        </a>
+                    </div>
+                </td>
+                <td class="col-sm-1 text-center align-middle">
+                    <div class="d-inline-block align-middle">
+                        {{ thread.numberAnswers }}
+                    </div>
+                </td>
+                <td class="col-sm-2">
+                    <div class="d-inline-block align-middle">
+                        {{ thread.lastPost.createdAt|date('d/m/Y H:i') }}
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">
+                    There is no post yet.
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if threads.haveToPaginate %}
+    <div class="navigation my-3">
+        {{ pagerfanta(threads, 'app_pagination', {routeName: 'category_show', routeParams: { 'slug': category.slug }}) }}
+    </div>
+{% endif %}

@@ -19,6 +19,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +29,7 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("/", name="category_index")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findMainCategoriesWithSub()")
+     * @Entity("categories", class="App\Entity\Category", expr="repository.findForCategoryIndex()")
      */
     public function index(array $categories): Response
     {
@@ -38,11 +39,15 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/forum/{slug}", name="category_show", methods="GET")
-     * @Entity("categories", class="App\Entity\Category", expr="repository.findSubCategoryWithAllParentAndChildren(slug)")
+     * @Route("/forum/{slug}/{page}", requirements={"page"="\d+"}, defaults={"page"="1"}, name="category_show", methods="GET")
+     * @Entity("category", class="App\Entity\Category", expr="repository.findForCategoryShow(slug)")
+     * @Entity("threads", class="App\Entity\Thread", expr="repository.findForCategoryShow(category, page)")
      */
-    public function show(Category $category): Response
+    public function show(Category $category, Pagerfanta $threads): Response
     {
-        return $this->render('category/show.html.twig', ['category' => $category]);
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+            'threads' => $threads,
+        ]);
     }
 }

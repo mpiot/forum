@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% import '_category_breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}New post{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category) }}
+    <li class="breadcrumb-item active">Edit post</li>
+{% endblock %}
+
+{% block body %}
+    {{ include('post/_form.html.twig') }}
+{% endblock %}
