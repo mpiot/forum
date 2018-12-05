@@ -18,6 +18,8 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
+use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,7 +29,25 @@ class ThreadEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('category', EntityType::class)
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'query_builder' => function (CategoryRepository $er) {
+                    return $er->createQueryBuilder('category')
+                        ->orderBy('category.left', 'ASC')
+                        ->where('category.parent IS NOT NULL')
+                        ;
+                },
+                'choice_label' => function (Category $category) {
+                    return str_repeat('-', ($category->getLevel() - 1)).$category->getTitle();
+                },
+                'choice_attr' => function (Category $category) {
+                    if ($category->hasChildren()) {
+                        return ['disabled' => 'disabled'];
+                    }
+
+                    return [];
+                },
+            ])
         ;
     }
 
