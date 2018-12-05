@@ -23,6 +23,7 @@ use App\Entity\Post;
 use App\Entity\Thread;
 use App\Form\PostType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,7 @@ class PostController extends AbstractController
      * @Route("/forum/{categorySlug}/{id}-{slug}/reply", name="thread_reply", methods="GET|POST")
      * @Entity("category", expr="repository.findOneBySlug(categorySlug)")
      * @Entity("thread", expr="repository.find(id)")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function new(Category $category, Thread $thread, Request $request): Response
     {
@@ -67,6 +69,7 @@ class PostController extends AbstractController
      * @Entity("category", expr="repository.findOneBySlug(categorySlug)")
      * @Entity("thread", expr="repository.find(threadId)")
      * @Entity("post", expr="repository.find(id)")
+     * @Security("is_granted('UPDATE', post)")
      */
     public function edit(Category $category, Thread $thread, Post $post, Request $request): Response
     {
@@ -97,6 +100,7 @@ class PostController extends AbstractController
      * @Entity("category", expr="repository.findOneBySlug(categorySlug)")
      * @Entity("thread", expr="repository.find(threadId)")
      * @Entity("post", expr="repository.find(id)")
+     * @Security("is_granted('DELETE', post)")
      */
     public function delete(Request $request, Category $category, Thread $thread, Post $post): Response
     {
