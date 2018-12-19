@@ -39,7 +39,7 @@ class UserNotificationSubscriber implements EventSubscriberInterface
     {
         return [
             Events::USER_REGISTERED => 'onUserRegistered',
-            Events::USER_RESET => 'onUserResetPassword'
+            Events::USER_RESET => 'onUserResetPassword',
         ];
     }
 

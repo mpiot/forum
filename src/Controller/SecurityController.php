@@ -154,7 +154,6 @@ class SecurityController extends Controller
             $this->addFlash('success', 'Your email has been successfully edited.');
 
             return $this->redirectToRoute('login');
-
         }
 
         return $this->render('security/reset_password/change_password.html.twig', [
