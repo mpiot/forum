@@ -1,57 +1,57 @@
-<table class="table">
-    <thead>
-        <tr class="row">
-            <th class="col-sm-10">{{ category.title }}</th>
-            <th class="col-sm-2">Last message</th>
-        </tr>
-    </thead>
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-10">{{ category.title }}</div>
+            <div class="col-sm-2">Last message</div>
+        </div>
+    </div>
 
-    <tbody>
+    <ul class="list-group list-group-flush">
         {% for subCategory in category.children %}
-            <tr class="row">
-                <td class="col-sm-10">
-                    <div class="d-inline-block align-middle">
-                            <span class="fa-stack fa-1x">
-                            <i class="far fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-list-ul fa-stack-1x"></i>
-                            </span>
-                    </div>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="d-inline-block align-middle">
+                                <span class="fa-stack fa-1x">
+                                <i class="far fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-list-ul fa-stack-1x"></i>
+                                </span>
+                        </div>
 
-                    <div class="d-inline-block align-middle ml-2">
-                        <a href="{{ path('category_show', {'slug': subCategory.slug}) }}">{{ subCategory.title }}</a>
-                        {% if subCategory.description is not null %}
-                            <div class="text-muted">{{ subCategory.description }}</div>
-                        {% endif %}
+                        <div class="d-inline-block align-middle ml-2">
+                            <a href="{{ path('category_show', {'slug': subCategory.slug}) }}">{{ subCategory.title }}</a>
+                            {% if subCategory.description is not null %}
+                                <div class="text-muted">{{ subCategory.description }}</div>
+                            {% endif %}
 
-                        {% if subCategory.hasChildren %}
-                            <div class="small">
-                                <span>Subforums: </span>
-                                {% for subSubCategory in subCategory.children %}
-                                    <a href="{{ path('category_show', {'slug': subSubCategory.slug}) }}">{{ subSubCategory.title }}</a>{{ not loop.last ? ', ' }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                            {% if subCategory.hasChildren %}
+                                <div class="small">
+                                    <span>Subforums: </span>
+                                    {% for subSubCategory in subCategory.children %}
+                                        <a href="{{ path('category_show', {'slug': subSubCategory.slug}) }}">{{ subSubCategory.title }}</a>{{ not loop.last ? ', ' }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                </td>
-                <td class="col-sm-2">
-                    <div class="d-inline-block align-middle small">
-                        {% if subCategory.lastActiveThread is not null %}
-                            <a href="{{ path('thread_show', { 'categorySlug': subCategory.lastActiveThread.category.slug, 'id': subCategory.lastActiveThread.id, 'slug': subCategory.lastActiveThread.slug }) }}">
-                                {{ subCategory.lastActiveThread.subject|truncate(20) }}
-                            </a><br>
-                            {{ subCategory.lastActiveThread.createdAt|date('d/m/Y H:i') }}
-                        {% else %}
-                            No thread
-                        {% endif %}
+                    <div class="col-sm-2">
+                        <div class="d-inline-block align-middle small">
+                            {% if subCategory.lastActiveThread is not null %}
+                                <a href="{{ path('thread_show', { 'categorySlug': subCategory.lastActiveThread.category.slug, 'id': subCategory.lastActiveThread.id, 'slug': subCategory.lastActiveThread.slug }) }}">
+                                    {{ subCategory.lastActiveThread.subject|truncate(20) }}
+                                </a><br>
+                                {{ subCategory.lastActiveThread.createdAt|date('d/m/Y H:i') }}
+                            {% else %}
+                                No thread
+                            {% endif %}
+                        </div>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </li>
         {% else %}
-            <tr>
-                <td colspan="3">
-                    There is no post yet.
-                </td>
-            </tr>
+            <li>
+                There is no post yet.
+            </li>
         {% endfor %}
-    </tbody>
-</table>
+    </ul>
+</div>
