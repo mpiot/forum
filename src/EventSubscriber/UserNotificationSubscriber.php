@@ -39,11 +39,17 @@ class UserNotificationSubscriber implements EventSubscriberInterface
     {
         return [
             Events::USER_REGISTERED => 'onUserRegistered',
+            Events::USER_RESET => 'onUserResetPassword'
         ];
     }
 
     public function onUserRegistered(GenericEvent $event)
     {
         $this->mailer->sendUserEmailValidationLink($event->getSubject());
+    }
+
+    public function onUserResetPassword(GenericEvent $event)
+    {
+        $this->mailer->sendUserResetPasswordLink($event->getSubject());
     }
 }

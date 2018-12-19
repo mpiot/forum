@@ -34,4 +34,17 @@ class UserNotificationMailer extends Mailer
 
         return $this->sendEMailMessage($user->getEmail(), $subject, $textContent, $htmlContent);
     }
+
+    public function sendUserResetPasswordLink(User $user): int
+    {
+        $subject = 'Reset your password';
+        $textContent = $this->templating->render('mail/user_reset_password.txt.twig', [
+            'user' => $user,
+        ]);
+        $htmlContent = $this->templating->render('mail/user_reset_password.html.twig', [
+            'user' => $user,
+        ]);
+
+        return $this->sendEMailMessage($user->getEmail(), $subject, $textContent, $htmlContent);
+    }
 }
