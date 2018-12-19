@@ -35,7 +35,7 @@ class UserUploadDirectorySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::USER_REGISTERED => 'onUserRegistered'
+            Events::USER_REGISTERED => 'onUserRegistered',
         ];
     }
 
