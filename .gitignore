@@ -6,7 +6,10 @@ docker-compose.override.yml.dist
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.*.local
+/public/assets
 /public/bundles/
+/public/uploads/users/*
+!/public/uploads/users/.gitkeep
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

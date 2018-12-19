@@ -7,4 +7,5 @@ twig:
 fos_ck_editor:
     configs:
         standard:
+            filebrowserBrowseRoute: elfinder
             toolbar: [ [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ], [ 'Scayt' ], '/', [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ], [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],[ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ], '/', [ 'Image', 'SpecialChar' ], [ 'Link', 'Unlink' ] ]
