@@ -1,21 +1,63 @@
 security:
+    encoders:
+        App\Entity\User:
+            algorithm: argon2i
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    role_hierarchy:
+        ROLE_MODERATOR:   ROLE_USER
+        ROLE_ADMIN:       ROLE_MODERATOR
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            pattern: ^/
+            user_checker: App\Security\UserChecker
 
-            # activate different ways to authenticate
+            form_login:
+                # login and check paths
+                check_path: /login
+                login_path: /login
 
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+                # login success redirecting options (read further below)
+                always_use_default_target_path: false
+                default_target_path:            /
+                use_referer:                    true
 
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
+                # csrf token options
+                csrf_token_generator: security.csrf.token_manager
+
+                # by default, the login form *must* be a POST, not a GET
+                post_only:      true
+                remember_me:    true
+
+                # by default, a session must exist before submitting an authentication request
+                # if false, then Request::hasPreviousSession is not called during authentication
+                require_previous_session: true
+
+            remember_me:
+                secret: "%env(APP_SECRET)%"
+                lifetime: 604800
+                path:     /
+
+            logout:
+                path:   /logout
+                target: /
+                csrf_token_generator: security.csrf.token_manager
+                invalidate_session: false
+
+            anonymous:    true
+            switch_user:  true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

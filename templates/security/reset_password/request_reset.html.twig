@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset password{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('login') }}">Login</a></li>
+    <li class="breadcrumb-item active">Forget password ?</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Forget password</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_rest(form) }}
+
+        <button class="btn">{{ button_label|default('Validate') }}</button>
+    {{ form_end(form) }}
+{% endblock %}

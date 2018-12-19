@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if false == category.hasChildren %}
+    {% if false == category.hasChildren and is_granted('ROLE_USER') %}
         <div class="row">
             <div class="col">
                 <a class="btn btn-primary mb-3" href="{{ path('thread_new', { 'slug': category.slug }) }}">

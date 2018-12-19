@@ -10,11 +10,13 @@
 {% endblock %}
 
 {% block body %}
-    <div class="mb-3">
-        <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
-            <span class="fas fa-reply"></span> Reply
-        </a>
-    </div>
+    {% if is_granted("ROLE_USER") %}
+        <div class="mb-3">
+            <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                <span class="fas fa-reply"></span> Reply
+            </a>
+        </div>
+    {% endif %}
 
     {% if posts.haveToPaginate %}
         <div class="navigation my-3">
@@ -40,18 +42,22 @@
                     {% if true == post.isMainPost %}
                         {% embed 'thread/_delete_form.html.twig' %}
                             {% block buttons %}
-                                <a class="btn btn-warning" href="{{ path('thread_edit', { 'categorySlug': category.slug, 'id': post.thread.id, 'slug': post.thread.slug }) }}">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
+                                {% if is_granted('UPDATE', thread) %}
+                                    <a class="btn btn-warning" href="{{ path('thread_edit', { 'categorySlug': category.slug, 'id': post.thread.id, 'slug': post.thread.slug }) }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                {% endif %}
                                 {{ parent() }}
                             {% endblock %}
                         {% endembed %}
                     {% else %}
                         {% embed 'post/_delete_form.html.twig' %}
                             {% block buttons %}
-                                <a class="btn btn-warning" href="{{ path('post_edit', {'categorySlug': category.slug, 'threadId': thread.id, 'threadSlug': thread.slug, 'id': post.id }) }}">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
+                                {% if is_granted('UPDATE', post) %}
+                                    <a class="btn btn-warning" href="{{ path('post_edit', {'categorySlug': category.slug, 'threadId': thread.id, 'threadSlug': thread.slug, 'id': post.id }) }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                {% endif %}
                                 {{ parent() }}
                             {% endblock %}
                         {% endembed %}
@@ -67,9 +73,11 @@
         </div>
     {% endif %}
 
-    <div class="mb-3">
-        <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
-            <span class="fas fa-reply"></span> Reply
-        </a>
-    </div>
+    {% if is_granted("ROLE_USER") %}
+        <div class="mb-3">
+            <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                <span class="fas fa-reply"></span> Reply
+            </a>
+        </div>
+    {% endif %}
 {% endblock %}

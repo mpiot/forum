@@ -4,9 +4,11 @@
 
     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
         {% block buttons %}
-            <button class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i> Delete
-            </button>
+            {% if is_granted('DELETE', thread) %}
+                <button class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            {% endif %}
         {% endblock %}
     </div>
 </form>

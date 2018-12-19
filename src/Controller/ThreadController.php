@@ -24,6 +24,7 @@ use App\Form\ThreadEditType;
 use App\Form\ThreadType;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,7 @@ class ThreadController extends AbstractController
     /**
      * @Route("/forum/{slug}/new", name="thread_new", methods="GET|POST")
      * @Entity("category", expr="repository.findForNewThread(slug)")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function new(Category $category, Request $request): Response
     {
@@ -79,6 +81,7 @@ class ThreadController extends AbstractController
     /**
      * @Route("/forum/{categorySlug}/{id}-{slug}/edit", name="thread_edit", methods="GET|POST")
      * @Entity("category", expr="repository.findForNewThread(categorySlug)")
+     * @Security("is_granted('UPDATE', thread)")
      */
     public function edit(Category $category, Thread $thread, Request $request): Response
     {
@@ -103,6 +106,7 @@ class ThreadController extends AbstractController
 
     /**
      * @Route("/forum/{categorySlug}/{id}", name="thread_delete", methods="DELETE")
+     * @Security("is_granted('DELETE', thread)")
      */
     public function delete(Request $request, Thread $thread): Response
     {
