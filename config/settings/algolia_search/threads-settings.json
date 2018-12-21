@@ -15,6 +15,10 @@
     "paginationLimitedTo": 1000,
     "attributeForDistinct": null,
     "exactOnSingleWordQuery": "attribute",
+    "searchableAttributes": [
+        "subject",
+        "posts"
+    ],
     "ranking": [
         "typo",
         "geo",

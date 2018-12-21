@@ -41,14 +41,11 @@ class SearchController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $query = $form->getData()['query'];
-            $em = $this->getDoctrine()->getManagerForClass(Thread::class);
-            $rawResults = $index->rawSearch($query, Thread::class);
-            $results = $index->search($query, Thread::class, $em);
+            $results = $index->rawSearch($query, Thread::class);
         }
 
         return $this->render('search/quick_search.html.twig', [
             'form' => $form->createView(),
-            'rawResults' => $rawResults,
             'results' => $results,
         ]);
     }
