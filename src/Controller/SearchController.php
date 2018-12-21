@@ -20,7 +20,6 @@ namespace App\Controller;
 
 use Algolia\SearchBundle\IndexManagerInterface;
 use App\Entity\Thread;
-use App\Form\SearchType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,19 +32,16 @@ class SearchController extends AbstractController
      */
     public function quickSearch(Request $request, IndexManagerInterface $index): Response
     {
-        $results = null;
-        $rawResults = null;
+        $query = $request->get('query');
 
-        $form = $this->createForm(SearchType::class);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $query = $form->getData()['query'];
+        if (null !== $query) {
             $results = $index->rawSearch($query, Thread::class);
+        } else {
+            $results = null;
         }
 
         return $this->render('search/quick_search.html.twig', [
-            'form' => $form->createView(),
+            'query' => $query,
             'results' => $results,
         ]);
     }

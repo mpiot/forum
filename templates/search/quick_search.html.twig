@@ -8,11 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    {{ form_start(form) }}
-        {{ form_row(form.query) }}
-
-        <button class="btn">{{ button_label|default('Search') }}</button>
-    {{ form_end(form) }}
+    {{ include('search/_quick_search_form.html.twig') }}
 
     {% if results is not null %}
         <div class="results mt-3">
