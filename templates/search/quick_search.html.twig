@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Search</li>
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_row(form.query) }}
+
+        <button class="btn">{{ button_label|default('Search') }}</button>
+    {{ form_end(form) }}
+
+    {% if results is not null %}
+        <div class="results mt-3">
+            {% if 0 == results|length %}
+                <p>There is no results.</p>
+            {% else %}
+                {% for i in 0..(results|length - 1) %}
+                    {% set thread, rawThread = results[i], rawResults['hits'][i] %}
+                    <h5><a href="{{ path('thread_show', { 'categorySlug': thread.category.slug, 'id': thread.id, 'slug': thread.slug }) }}">{{ rawThread['_highlightResult']['subject']['value']|raw }}</a></h5>
+                    <p>
+                        {% for rawPost in rawThread['_highlightResult']['posts'] %}
+                            {% if 'full' == rawPost['matchLevel'] %}
+                                {{ rawPost['value']|raw }} {{ not loop.last ? '...' }}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
