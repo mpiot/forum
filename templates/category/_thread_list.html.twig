@@ -31,8 +31,9 @@
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <div class="d-inline-block align-middle">
-                            {{ thread.lastPost.createdAt|date('d/m/Y H:i') }}
+                        <div class="d-inline-block align-middle small">
+                            by {{ thread.lastPost.createdBy.pseudo }}<br>
+                            at {{ thread.lastPost.createdAt|date('d/m/Y H:i') }}
                         </div>
                     </div>
                 </div>

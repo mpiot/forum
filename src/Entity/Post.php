@@ -19,7 +19,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Blameable\Traits\BlameableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -29,7 +29,6 @@ class Post
 {
     const NUM_ITEMS = 10;
 
-    use BlameableEntity;
     use TimestampableEntity;
 
     /**
@@ -54,6 +53,22 @@ class Post
      * @ORM\Column(type="boolean")
      */
     private $mainPost;
+
+    /**
+     * @var User
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $createdBy;
+
+    /**
+     * @var User
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $updatedBy;
 
     public function __construct()
     {
@@ -104,5 +119,15 @@ class Post
     public function isMainPost(): bool
     {
         return $this->mainPost;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 }

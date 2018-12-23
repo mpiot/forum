@@ -12,6 +12,7 @@
     <h1>Registration</h1>
 
     {{ form_start(form) }}
+        {{ form_row(form.pseudo) }}
         {{ form_row(form.email) }}
         {{ form_row(form.plainPassword) }}
         {{ form_rest(form) }}
