@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProfileType extends AbstractType
 {
@@ -32,6 +33,13 @@ class ProfileType extends AbstractType
         $builder
             ->add('pseudo', TextType::class)
             ->add('email', EmailType::class)
+            ->add('imageFile', VichImageType::class, [
+                'label' => 'Profile image',
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => false,
+                'image_uri' => true,
+            ])
         ;
     }
 
