@@ -83,7 +83,7 @@ class ThreadVoter extends Voter
             return false;
         }
 
-        if ($thread->getCreatedBy() === $token->getUser()->getEmail()) {
+        if ($thread->getCreatedBy() === $token->getUser()) {
             return true;
         }
 
