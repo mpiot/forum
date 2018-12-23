@@ -18,9 +18,9 @@
 
 namespace App\Controller;
 
+use App\Form\ChangePasswordType;
 use App\Form\DeleteAccountType;
 use App\Form\ProfileType;
-use App\Form\ChangePasswordType;
 use App\Service\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProfileController extends AbstractController
 {
-     /**
+    /**
      * @Route("/my-profile", name="profile_show", methods="GET")
      */
     public function show(): Response

@@ -105,7 +105,7 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="integer", nullable=true)
      *
-     * @var integer
+     * @var int
      */
     private $imageSize;
 
@@ -131,15 +131,14 @@ class User implements UserInterface, \Serializable
     /** @see \Serializable::unserialize() */
     public function unserialize($serialized)
     {
-        list (
+        list(
             $this->id,
             $this->email,
             $this->pseudo,
             $this->password,
             $this->roles,
             $this->activated,
-            $this->imageName,
-        ) = unserialize($serialized);
+            $this->imageName) = unserialize($serialized);
     }
 
     public function getId(): ?int
