@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="d-inline-block align-middle small">
-                            by {{ thread.lastPost.createdBy.pseudo }}<br>
+                            by {{ thread.lastPost.createdBy is not null ? thread.lastPost.createdBy.pseudo: 'Anonymous' }}<br>
                             at {{ thread.lastPost.createdAt|date('d/m/Y H:i') }}
                         </div>
                     </div>
