@@ -10,19 +10,21 @@
 {% endblock %}
 
 {% block body %}
-    {% if is_granted("ROLE_USER") %}
-        <div class="mb-3">
-            <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
-                <span class="fas fa-reply"></span> Reply
-            </a>
-        </div>
-    {% endif %}
+    <div class="row my-3">
+        {% if is_granted("ROLE_USER") %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                    <span class="fas fa-reply"></span> Reply
+                </a>
+            </div>
+        {% endif %}
 
-    {% if posts.haveToPaginate %}
-        <div class="navigation my-3">
-            {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
-        </div>
-    {% endif %}
+        {% if posts.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
 
     {% for post in posts %}
         <div class="jumbotron p-3">
@@ -69,17 +71,19 @@
         </div>
     {% endfor %}
 
-    {% if posts.haveToPaginate %}
-        <div class="navigation my-3">
-            {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
-        </div>
-    {% endif %}
+    <div class="row my-3">
+        {% if is_granted("ROLE_USER") %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                    <span class="fas fa-reply"></span> Reply
+                </a>
+            </div>
+        {% endif %}
 
-    {% if is_granted("ROLE_USER") %}
-        <div class="mb-3">
-            <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
-                <span class="fas fa-reply"></span> Reply
-            </a>
-        </div>
-    {% endif %}
+        {% if posts.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
 {% endblock %}
