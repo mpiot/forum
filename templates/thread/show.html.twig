@@ -70,7 +70,11 @@
 
                 <div class="col-3 border-left">
                     <div class="text-center mb-3">
-                        <span class="user-profile-picture">{{ post.createdBy is not null ? post.createdBy.pseudo|slice(0, 2)|upper : 'AN' }}</span>
+                        {% if post.createdBy is not null and post.createdBy.imageName is not null %}
+                            <img class="user-profile-picture" src="{{ vich_uploader_asset(post.createdBy, 'imageFile') }}" alt="{{ post.createdBy.pseudo }}" />
+                        {% else %}
+                            <span class="user-profile-picture">{{ post.createdBy is not null ? post.createdBy.pseudo|slice(0, 2)|upper : 'AN' }}</span>
+                        {% endif %}
                     </div>
                     <div>
                         {{ post.createdBy is not null ? post.createdBy.pseudo: 'Anonymous' }}
