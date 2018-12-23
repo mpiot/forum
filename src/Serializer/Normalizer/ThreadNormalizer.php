@@ -31,7 +31,8 @@ class ThreadNormalizer implements NormalizerInterface
 
         $posts = [];
         /**
-         * @var Post
+         * @var Thread
+         * @var Post   $post
          */
         foreach ($thread->getPosts() as $post) {
             $posts[] = $post->getMessage();
