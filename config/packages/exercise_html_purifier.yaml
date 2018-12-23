@@ -1,0 +1,11 @@
+exercise_html_purifier:
+    # full configuration reference: http://htmlpurifier.org/live/configdoc/plain.html
+    default:
+        # the charset used by the original contents
+        Core.Encoding: 'UTF-8'
+
+    search_title:
+        HTML.Allowed: ''
+
+    search_resume:
+        HTML.Allowed: 'strong'
