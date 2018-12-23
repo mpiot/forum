@@ -55,7 +55,7 @@ class Post
     private $mainPost;
 
     /**
-     * @var User $createdBy
+     * @var User
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
@@ -63,7 +63,7 @@ class Post
     private $createdBy;
 
     /**
-     * @var User $updatedBy
+     * @var User
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")

@@ -80,7 +80,7 @@ class Thread
     private $lastPost;
 
     /**
-     * @var User $createdBy
+     * @var User
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
@@ -88,7 +88,7 @@ class Thread
     private $createdBy;
 
     /**
-     * @var User $updatedBy
+     * @var User
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
