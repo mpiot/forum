@@ -83,7 +83,7 @@ class PostVoter extends Voter
             return false;
         }
 
-        if ($post->getCreatedBy() === $token->getUser()->getEmail()) {
+        if ($post->getCreatedBy() === $token->getUser()) {
             return true;
         }
 
