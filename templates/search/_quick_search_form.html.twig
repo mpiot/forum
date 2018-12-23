@@ -1,0 +1,8 @@
+<form method="get" {% if display is defined and 'navbar' == display %}action="{{ path('quick_search') }}" class="form-inline my-2 my-lg-0"{% endif %}>
+    {% if display is not defined or 'navbar' != display %}<div class="input-group mb-3">{% endif %}
+        <input class="form-control" type="search" name="query" placeholder="Search..." {{ query is defined and query is not null ? 'value='~query~'' }}>
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit"><span class="fas fa-search"></span></button>
+        </div>
+    {% if display is not defined or 'navbar' != display %}</div>{% endif %}
+</form>

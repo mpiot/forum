@@ -43,6 +43,7 @@ class PostType extends AbstractType
                         'homeFolder' => $this->tokenStorage->getToken()->getUser()->getId(),
                     ],
                 ],
+                'purify_html' => true,
             ])
         ;
     }

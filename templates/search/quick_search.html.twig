@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Search</li>
+{% endblock %}
+
+{% block body %}
+    {{ include('search/_quick_search_form.html.twig') }}
+
+    {% if results is not null %}
+        <div class="results mt-3">
+            {% for result in results['hits'] %}
+                <h5><a href="{{ path('thread_show', { 'categorySlug': result.categorySlug, 'id': result.objectID, 'slug': result.slug }) }}">{{ result['_highlightResult']['subject']['value']|purify('search_title') }}</a></h5>
+                <p>
+                    {% for post in result['_highlightResult']['posts'] %}
+                        {% if 'full' == post['matchLevel'] %}
+                            {{ post['value']|purify('search_resume') }} {{ not loop.last ? '... ' }}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p>There is no results.</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

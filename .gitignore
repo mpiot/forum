@@ -1,6 +1,6 @@
 
 ###> app/docker ###
-docker-compose.override.yml.dist
+docker-compose.override.yml
 ###< app/docker ###
 
 ###> symfony/framework-bundle ###
