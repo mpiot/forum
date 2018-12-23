@@ -59,6 +59,7 @@ class Post
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $createdBy;
 
@@ -67,6 +68,7 @@ class Post
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $updatedBy;
 

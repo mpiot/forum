@@ -42,7 +42,7 @@ class PostRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('post')
             ->leftJoin('post.thread', 'thread')
-            ->innerJoin('post.createdBy', 'post_created_by')
+            ->leftJoin('post.createdBy', 'post_created_by')
                 ->addSelect('post_created_by')
             ->where('thread.id = :id')
                 ->setParameter('id', $id)

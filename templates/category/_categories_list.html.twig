@@ -40,7 +40,7 @@
                                 <a href="{{ path('thread_show', { 'categorySlug': subCategory.lastActiveThread.category.slug, 'id': subCategory.lastActiveThread.id, 'slug': subCategory.lastActiveThread.slug }) }}">
                                     {{ subCategory.lastActiveThread.subject|truncate(20) }}
                                 </a><br>
-                                by {{ subCategory.lastActiveThread.lastPost.createdBy.pseudo }}<br>
+                                by {{ subCategory.lastActiveThread.lastPost.createdBy is not null ? subCategory.lastActiveThread.lastPost.createdBy.pseudo: 'Anonymous' }}<br>
                                 at {{ subCategory.lastActiveThread.lastPost.createdAt|date('d/m/Y H:i') }}
                             {% else %}
                                 No thread
