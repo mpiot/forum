@@ -45,7 +45,7 @@ services:
         class: Pagerfanta\View\OptionableView
         arguments:
         - '@pagerfanta.view.twitter_bootstrap4_translated'
-        - { proximity: 2, css_container_class: 'pagination justify-content-center' }
+        - { proximity: 2, css_container_class: 'pagination ml-auto' }
         tags: [{ name: pagerfanta.view, alias: app_pagination }]
 
     App\EventSubscriber\CategoryLastActiveThreadSubscriber:
