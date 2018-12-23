@@ -21,7 +21,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -32,7 +31,6 @@ class Thread
 {
     const NUM_ITEMS = 10;
 
-    use BlameableEntity;
     use TimestampableEntity;
 
     /**
@@ -80,6 +78,22 @@ class Thread
      * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $lastPost;
+
+    /**
+     * @var User $createdBy
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $createdBy;
+
+    /**
+     * @var User $updatedBy
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $updatedBy;
 
     public function __construct(Category $category)
     {
@@ -180,5 +194,15 @@ class Thread
         $this->lastPost = $post;
 
         return $this;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 }
