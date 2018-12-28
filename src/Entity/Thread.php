@@ -79,6 +79,8 @@ class Thread
      */
     private $lastPost;
 
+    private $previousLastPost;
+
     /**
      * @var User
      *
@@ -194,6 +196,18 @@ class Thread
     public function setLastPost(?Post $post): self
     {
         $this->lastPost = $post;
+
+        return $this;
+    }
+
+    public function getPreviousLastPost(): ?Post
+    {
+        return $this->previousLastPost;
+    }
+
+    public function setPreviousLastPost(?Post $previousLastPost): self
+    {
+        $this->previousLastPost = $previousLastPost;
 
         return $this;
     }

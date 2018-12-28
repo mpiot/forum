@@ -80,7 +80,7 @@ class Category
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Thread")
-     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $lastActiveThread;
 
