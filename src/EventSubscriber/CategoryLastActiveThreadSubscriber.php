@@ -78,7 +78,7 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
                     $this->removeLastActiveThread($entity, $previousCategory);
 
                     // Add the thread to the new Category
-                    // TODO
+                    $this->addLastActiveThread($entity, $newCategory, true);
                 }
             }
         }
@@ -104,7 +104,11 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
 
     private function addLastActiveThread(Thread $thread, Category $category, bool $check = false)
     {
-        $this->setAsLastActiveThread($thread, $category);
+        if (false === $check ||
+            (null === $category->getLastActiveThread() || $thread->getLastPost()->getCreatedAt() > $category->getLastActiveThread()->getLastPost()->getCreatedAt())
+        ) {
+            $this->setAsLastActiveThread($thread, $category, $category->getLastActiveThread());
+        }
     }
 
     private function removeLastActiveThread(Thread $thread, Category $category, bool $check = false)
@@ -124,10 +128,10 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
         }
     }
 
-    private function setAsLastActiveThread(Thread $thread, Category $category, ?Thread $checkThread = null)
+    private function setAsLastActiveThread(?Thread $thread, Category $category, ?Thread $checkThread)
     {
         if (null === $checkThread ||
-            $category->getLastActiveThread()->getId() === $checkThread->getId()
+            null !==$category->getLastActiveThread() && $category->getLastActiveThread()->getId() === $checkThread->getId()
         ) {
             $category->setLastActiveThread($thread);
 
