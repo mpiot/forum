@@ -54,15 +54,19 @@ class ThreadRepository extends ServiceEntityRepository
         return $this->createPaginator($query, $page);
     }
 
-    public function findLastActive(int $number = 1)
+    public function findBeforeLastThreadForCategory(Category $category)
     {
         $query = $this->createQueryBuilder('thread')
-            ->leftJoin('thread.lastPost', 'last_post')
-            ->orderBy('last_post.createdAt', 'DESC')
-            ->setMaxResults($number)
+            ->innerJoin('thread.category', 'category')
+            ->innerJoin('thread.posts', 'posts')
+            ->where('category = :category')
+                ->setParameter('category', $category)
+            ->orderBy('posts.createdAt', 'DESC')
+            ->setFirstResult(1)
+            ->setMaxResults(1)
             ->getQuery();
 
-        return $query->getResult();
+        return $query->getOneOrNullResult();
     }
 
     private function createPaginator(Query $query, int $page): Pagerfanta

@@ -53,9 +53,11 @@ class ThreadLastPostSubscriber implements EventSubscriber
         }
 
         if ($post->getThread()->getLastPost() === $post) {
+            // TODO: Use a custom method to retrieve the before last post: like in Thread
             $posts = $post->getThread()->getPosts()->toArray();
             $numberPosts = $post->getThread()->getPosts()->count();
 
+            $post->getThread()->setPreviousLastPost($post->getThread()->getLastPost());
             $post->getThread()->setLastPost($posts[$numberPosts - 2]);
         }
     }
