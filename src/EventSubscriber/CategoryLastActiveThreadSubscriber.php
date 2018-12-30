@@ -131,7 +131,7 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
     private function setAsLastActiveThread(?Thread $thread, Category $category, ?Thread $checkThread)
     {
         if (null === $checkThread ||
-            null !==$category->getLastActiveThread() && $category->getLastActiveThread()->getId() === $checkThread->getId()
+            null !== $category->getLastActiveThread() && $category->getLastActiveThread()->getId() === $checkThread->getId()
         ) {
             $category->setLastActiveThread($thread);
 
