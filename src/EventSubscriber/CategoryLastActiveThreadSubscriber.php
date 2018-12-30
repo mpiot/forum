@@ -29,6 +29,16 @@ use Doctrine\ORM\UnitOfWork;
 
 class CategoryLastActiveThreadSubscriber implements EventSubscriber
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var UnitOfWork
+     */
+    private $uow;
+
     public function getSubscribedEvents()
     {
         return [
@@ -38,70 +48,83 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
 
     public function onFlush(OnFlushEventArgs $args)
     {
-        $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
+        $this->em = $args->getEntityManager();
+        $this->uow = $this->em->getUnitOfWork();
 
         // Get entities scheduled for insertion
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+        foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
             // Only for Post entities
             if ($entity instanceof Post) {
                 $thread = $entity->getThread();
+                $category = $thread->getCategory();
 
-                // Call function to define lastActiveThread in Categories and parents
-                $this->defineAsLastActiveThread($thread, $thread->getCategory(), $em, $uow);
+                $this->addLastActiveThread($thread, $category);
+            }
+        }
+
+        // Get entities scheduled for update
+        foreach ($this->uow->getScheduledEntityUpdates() as $entity) {
+            // Only on Thread entity changes
+            if ($entity instanceof Thread) {
+                // Get the changes
+                $changeSet = $this->uow->getEntityChangeSet($entity);
+
+                // Only when the category change
+                if (array_key_exists('category', $changeSet)) {
+                    $previousCategory = $changeSet['category'][0];
+                    $newCategory = $changeSet['category'][1];
+
+                    // Remove the thread for the previous Category
+                    $this->removeLastActiveThread($entity, $previousCategory);
+
+                    // Add the thread to the new Category
+                    // TODO
+                }
             }
         }
 
         // Get entities scheduled for deletions
-        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+        foreach ($this->uow->getScheduledEntityDeletions() as $entity) {
             // For Thread entities
             if ($entity instanceof Thread) {
-                if ($entity->getId() === $entity->getCategory()->getLastActiveThread()->getId()) {
-                    $previousLastThread = $em->getRepository(Thread::class)->findBeforeLastThreadForCategory($entity->getCategory());
+                $category = $entity->getCategory();
 
-                    // Call function to define the new lastActiveThread in Categories and parents
-                    $this->defineAsLastActiveThread($previousLastThread, $entity->getCategory(), $em, $uow, $entity);
-                }
+                $this->removeLastActiveThread($entity, $category);
             }
 
             // For Post entities
             if ($entity instanceof Post) {
-                // If the post is in the lastActiveThread and is the lastPost of the Thread
-                if (
-                    $entity->getThread()->getCategory()->getLastActiveThread()->getId() === $entity->getThread()->getId()
-                    && null !== $entity->getThread()->getPreviousLastPost()
-                ) {
-                    $previousLastPost = $entity->getThread()->getPreviousLastPost();
-                    $previousLastThread = $em->getRepository(Thread::class)->findBeforeLastThreadForCategory($entity->getThread()->getCategory());
+                $thread = $entity->getThread();
+                $category = $thread->getCategory();
 
-                    if ($previousLastThread->getLastPost()->getCreatedAt() < $previousLastPost->getCreatedAt()) {
-                        // Then, we need to define the $previousLastThread as lastActiveThread for the Category
-                        // And check when we rise up, the $category->getLastActiveThread() must match with $entity->getThread()
-                        $this->defineAsLastActiveThread($previousLastThread, $entity->getThread()->getCategory(), $em, $uow, $entity->getThread());
-                    }
-                }
+                $this->removeLastActiveThread($thread, $category, true);
             }
         }
-
-        // Get entities that are persisted
-//        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-//            // Only on Post entity changes
-//            if ($entity instanceof Post) {
-//                // Get the changes
-//                $changeSet = $uow->getEntityChangeSet($entity);
-//                // Only when the activationCode change
-//                if (array_key_exists('activationCode', $changeSet)) {
-//                    // Then populate the new activation code
-//                    $this->setActivationCode($entity);
-//                    // And save it in database
-//                    $classMetaData = $em->getClassMetadata(ActivationCode::class);
-//                    $uow->computeChangeSet($classMetaData, $entity->getActivationCode());
-//                }
-//            }
-//        }
     }
 
-    private function defineAsLastActiveThread(Thread $thread, Category $category, EntityManagerInterface $em, UnitOfWork $uow, ?Thread $checkThread = null)
+    private function addLastActiveThread(Thread $thread, Category $category, bool $check = false)
+    {
+        $this->setAsLastActiveThread($thread, $category);
+    }
+
+    private function removeLastActiveThread(Thread $thread, Category $category, bool $check = false)
+    {
+        // Check if the category last thread is the same than the deleted thread
+        if ($category->getLastActiveThread()->getId() === $thread->getId()) {
+            // Get the before last thread for the Category
+            $previousLastThread = $this->em->getRepository(Thread::class)->findBeforeLastThreadForCategory($category);
+
+            // In some case, when the last post of a Thread is deleted, we need to check if the last post from
+            // the previousLastThread is newer than the previous last post from the actual Thread
+            if (false === $check ||
+                (null !== $thread->getPreviousLastPost() && $previousLastThread->getLastPost()->getCreatedAt() < $thread->getPreviousLastPost()->getCreatedAt())
+            ) {
+                $this->setAsLastActiveThread($previousLastThread, $category, $thread);
+            }
+        }
+    }
+
+    private function setAsLastActiveThread(Thread $thread, Category $category, ?Thread $checkThread = null)
     {
         if (null === $checkThread ||
             $category->getLastActiveThread()->getId() === $checkThread->getId()
@@ -109,12 +132,12 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
             $category->setLastActiveThread($thread);
 
             // Save data
-            $classMetaData = $em->getClassMetadata(Category::class);
-            $uow->computeChangeSet($classMetaData, $category);
+            $classMetaData = $this->em->getClassMetadata(Category::class);
+            $this->uow->computeChangeSet($classMetaData, $category);
 
             // We need to rise up the tree, check if the previous last thread is older than the given (for deletion)
             if (null !== $parentCategory = $category->getParent()) {
-                $this->defineAsLastActiveThread($thread, $parentCategory, $em, $uow, $checkThread);
+                $this->setAsLastActiveThread($thread, $parentCategory, $checkThread);
             }
         }
     }
