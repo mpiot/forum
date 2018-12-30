@@ -117,6 +117,8 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
         if ($category->getLastActiveThread()->getId() === $thread->getId()) {
             // Get the before last thread for the Category
             $previousLastThread = $this->em->getRepository(Thread::class)->findBeforeLastThreadForCategory($category);
+            // If the thread is the last, it's returned as previous last, then replace it by null
+            $previousLastThread = (null !== $previousLastThread && $previousLastThread->getId() !== $thread->getId()) ? $previousLastThread : null;
 
             // In some case, when the last post of a Thread is deleted, we need to check if the last post from
             // the previousLastThread is newer than the previous last post from the actual Thread
