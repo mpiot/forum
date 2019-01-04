@@ -25,7 +25,9 @@ services:
             - .:/app
 
     db:
-        image: mysql:5.7.21
+        build:
+            context: docker
+            dockerfile: MysqlDockerfile
         environment:
           - MYSQL_ROOT_PASSWORD=forum
           - MYSQL_USER=forum

@@ -1,8 +1,8 @@
-ARG NODE_VERSION=10.13.0
-ARG COMPOSER_VERSION=1.7.3
-ARG PHP_VERSION=7.2.11
+ARG NODE_VERSION=11.6.0
+ARG COMPOSER_VERSION=1.8.0
+ARG PHP_VERSION=7.2.13
 ARG ICU_VERSION=63.1
-ARG APCU_VERSION=5.1.12
+ARG APCU_VERSION=5.1.16
 ARG XDEBUG_VERSION=2.6.1
 
 
@@ -18,7 +18,6 @@ ARG APCU_VERSION
 ENV PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"
 
 WORKDIR /app
-VOLUME ["/app", "/app/files"]
 
 # Install paquet requirements
 RUN set -ex; \
@@ -168,7 +167,7 @@ RUN APP_ENV=prod composer install -o -n --no-ansi --no-dev
 #####################################
 FROM app as app-prod
 
-ENV APP_VERSION=0.3.0
+ENV APP_VERSION=0.0.0
 
 COPY --from=vendor-builder /app /app
 WORKDIR /app

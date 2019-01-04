@@ -1,5 +1,4 @@
 DOCKER_COMPOSE?=docker-compose
-RUN=$(DOCKER_COMPOSE) run --rm app
 EXEC?=$(DOCKER_COMPOSE) exec app
 CONSOLE=bin/console
 PHPCSFIXER?=$(EXEC) php -d memory_limit=1024m vendor/bin/php-cs-fixer
@@ -41,7 +40,7 @@ clear-cache: perm
 	$(EXEC) $(CONSOLE) cache:warmup
 
 tty:                                                                                                   ## Run app container in interactive mode
-	$(RUN) /bin/bash
+	$(EXEC) /bin/bash
 
 clear: perm                                                                                            ## Remove all the cache, the logs, the sessions and the built assets
 	$(EXEC) rm -rf var/cache/*
