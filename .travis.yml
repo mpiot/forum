@@ -19,8 +19,7 @@ cache:
 
 before_script:
   - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD
-  - docker pull $APP_IMAGE_NAME:dev-latest || true
-  - docker pull $APP_IMAGE_NAME:$DEV_TAG || true
+  - docker pull $APP_IMAGE_NAME:$DEV_TAG || $APP_IMAGE_NAME:dev-latest || true
 
 script:
   - make build
