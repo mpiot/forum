@@ -8,5 +8,6 @@ services:
             cache_from:
                 - ${APP_IMAGE_NAME}:${DEV_TAG}
                 - ${APP_IMAGE_NAME}:dev-latest
+        image: ${APP_IMAGE_NAME}:ci
         volumes:
             - .:/app
