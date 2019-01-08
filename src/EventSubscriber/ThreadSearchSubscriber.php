@@ -63,5 +63,8 @@ class ThreadSearchSubscriber implements EventSubscriber
 
         $thread = $post->getThread();
         $thread->setUpdatedAt(new \DateTime());
+
+        $args->getObjectManager()->persist($thread);
+        $args->getObjectManager()->flush();
     }
 }
