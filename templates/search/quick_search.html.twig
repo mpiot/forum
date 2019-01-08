@@ -13,11 +13,14 @@
     {% if results is not null %}
         <div class="results mt-3">
             {% for result in results['hits'] %}
-                <h5><a href="{{ path('thread_show', { 'categorySlug': result.categorySlug, 'id': result.objectID, 'slug': result.slug }) }}">{{ result['_highlightResult']['subject']['value']|purify('search_title') }}</a></h5>
+                {% set subject = result['_highlightResult']['subject']['value'] ?? result['subject']  %}
+                {% set posts = result['_highlightResult']['posts'] ?? null %}
+
+                <h5><a href="{{ path('thread_show', { 'categorySlug': result.categorySlug, 'id': result.objectID, 'slug': result.slug }) }}">{{ subject|purify('search_result') }}</a></h5>
                 <p>
-                    {% for post in result['_highlightResult']['posts'] %}
+                    {% for post in posts %}
                         {% if 'full' == post['matchLevel'] %}
-                            {{ post['value']|purify('search_resume') }} {{ not loop.last ? '... ' }}
+                            {{ post['value']|purify('search_result') }} {{ not loop.last ? '... ' }}
                         {% endif %}
                     {% endfor %}
                 </p>

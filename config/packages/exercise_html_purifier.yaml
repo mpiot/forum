@@ -4,8 +4,8 @@ exercise_html_purifier:
         # the charset used by the original contents
         Core.Encoding: 'UTF-8'
 
-    search_title:
+    no_html:
         HTML.Allowed: ''
 
-    search_resume:
+    search_result:
         HTML.Allowed: 'strong'

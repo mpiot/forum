@@ -61,6 +61,6 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default, priority: 30 }
 
-    App\EventSubscriber\ThreadSearchSubscriber:
-        tags:
-            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
+    App\Serializer\Normalizer\ThreadNormalizer:
+        arguments:
+            $purifier: '@exercise_html_purifier.no_html'
