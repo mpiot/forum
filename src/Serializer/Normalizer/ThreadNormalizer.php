@@ -39,7 +39,7 @@ class ThreadNormalizer implements NormalizerInterface
         $posts = [];
         if (0 !== $thread->getPosts()->count()) {
             /**
-             * @var Post $post
+             * @var Post
              */
             foreach ($thread->getPosts() as $post) {
                 $posts[] = $this->purifier->purify($post->getMessage());
