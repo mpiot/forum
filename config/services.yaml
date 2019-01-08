@@ -57,9 +57,9 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default, priority: 20 }
 
-    App\EventSubscriber\ThreadLastPostSubscriber:
+    App\EventSubscriber\ThreadSearchSubscriber:
         tags:
-            - { name: doctrine.event_subscriber, connection: default, priority: 30 }
+            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
 
     App\Serializer\Normalizer\ThreadNormalizer:
         arguments:

@@ -37,9 +37,11 @@ class ThreadType extends AbstractType
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $thread = $event->getData();
+
             $post = $thread->getFirstPost();
-            $post->setThread($thread);
             $post->setMainPost(true);
+
+            $thread->addPost($post);
 
             $event->setData($thread);
         });
