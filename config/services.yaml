@@ -39,23 +39,24 @@ services:
     twig.extension.text:
         class: Twig_Extensions_Extension_Text
         tags:
-        - { name: twig.extension }
+            - { name: twig.extension }
 
     pagerfanta.view.app_pagination:
         class: Pagerfanta\View\OptionableView
         arguments:
-        - '@pagerfanta.view.twitter_bootstrap4_translated'
-        - { proximity: 2, css_container_class: 'pagination ml-auto' }
-        tags: [{ name: pagerfanta.view, alias: app_pagination }]
+            - '@pagerfanta.view.twitter_bootstrap4_translated'
+            - { proximity: 2, css_container_class: 'pagination ml-auto' }
+        tags:
+            - { name: pagerfanta.view, alias: app_pagination }
 
     App\EventSubscriber\CategoryLastActiveThreadSubscriber:
         tags:
-        - { name: doctrine.event_subscriber, connection: default, priority: 30 }
+            - { name: doctrine.event_subscriber, connection: default }
 
-    App\EventSubscriber\NumberPostSubscriber:
+    App\EventSubscriber\ThreadSearchSubscriber:
         tags:
-        - { name: doctrine.event_subscriber, connection: default, priority: 10 }
+            - { name: doctrine.event_subscriber, connection: default }
 
-    App\EventSubscriber\ThreadLastPostSubscriber:
-        tags:
-        - { name: doctrine.event_subscriber, connection: default, priority: 20 }
+    App\Serializer\Normalizer\ThreadNormalizer:
+        arguments:
+            $purifier: '@exercise_html_purifier.no_html'

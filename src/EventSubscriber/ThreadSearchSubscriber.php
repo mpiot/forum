@@ -20,31 +20,36 @@ namespace App\EventSubscriber;
 
 use App\Entity\Post;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 
-class ThreadLastPostSubscriber implements EventSubscriber
+class ThreadSearchSubscriber implements EventSubscriber
 {
     public function getSubscribedEvents()
     {
         return [
-            Events::prePersist,
-            Events::preRemove,
+            Events::postPersist,
+            Events::postUpdate,
+            Events::postRemove,
         ];
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args)
     {
-        $post = $args->getObject();
-
-        if (!$post instanceof Post) {
-            return;
-        }
-
-        $post->getThread()->setLastPost($post);
+        $this->indexThread($args);
     }
 
-    public function preRemove(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $this->indexThread($args);
+    }
+
+    public function postRemove(LifecycleEventArgs $args)
+    {
+        $this->indexThread($args, true);
+    }
+
+    private function indexThread(LifecycleEventArgs $args, bool $postRemoved = false)
     {
         $post = $args->getObject();
 
@@ -52,13 +57,14 @@ class ThreadLastPostSubscriber implements EventSubscriber
             return;
         }
 
-        if ($post->getThread()->getLastPost() === $post) {
-            // TODO: Use a custom method to retrieve the before last post: like in Thread
-            $posts = $post->getThread()->getPosts()->toArray();
-            $numberPosts = $post->getThread()->getPosts()->count();
-
-            $post->getThread()->setPreviousLastPost($post->getThread()->getLastPost());
-            $post->getThread()->setLastPost($posts[$numberPosts - 2]);
+        if (true === $postRemoved && null === $post->getThread()) {
+            return;
         }
+
+        $thread = $post->getThread();
+        $thread->setUpdatedAt(new \DateTime());
+
+        $args->getObjectManager()->persist($thread);
+        $args->getObjectManager()->flush();
     }
 }

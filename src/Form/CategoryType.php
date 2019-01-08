@@ -55,7 +55,9 @@ class CategoryType extends AbstractType
                 'required' => false,
             ])
             ->add('title', TextType::class)
-            ->add('description', TextType::class)
+            ->add('description', TextType::class, [
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(
@@ -66,7 +68,7 @@ class CategoryType extends AbstractType
                 // If the user don't select a Parent, then we define the parent on Category
                 // This is the root tree
                 if (null === $category->getParent()) {
-                    $parent = $this->categoryRepository->find(1);
+                    $parent = $this->categoryRepository->findOneBy(['title' => 'app_root_category']);
                     $category->setParent($parent);
                 }
             }

@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
     {
         $categories = [
             [
-                'title' => 'Category',
+                'title' => 'app_root_category',
                 'children' => [
                     [
                         'title' => 'Site web',

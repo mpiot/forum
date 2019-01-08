@@ -47,7 +47,6 @@ class ThreadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($thread);
-
             $em->flush();
 
             return $this->redirectToRoute('thread_show', [

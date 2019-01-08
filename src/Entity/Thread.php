@@ -63,7 +63,7 @@ class Thread
     private $numberPosts;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="thread")
+     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="thread", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $posts;
 
@@ -174,6 +174,39 @@ class Thread
     public function getPosts(): Collection
     {
         return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setThread($this);
+
+            // Define the new post as last post
+            $this->lastPost = $post;
+
+            // Change the counter
+            $this->increaseNumberPosts(1);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->contains($post)) {
+            $this->posts->removeElement($post);
+
+            // Is this post the last post ? If yes remove it as last post
+            if ($this->lastPost->getId() === $post->getId()) {
+                $this->lastPost = $this->posts->last();
+            }
+
+            // Change the counter
+            $this->decreaseNumberPosts(1);
+        }
+
+        return $this;
     }
 
     public function getFirstPost(): ?Post

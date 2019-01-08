@@ -19,23 +19,29 @@
 namespace App\Serializer\Normalizer;
 
 use Algolia\SearchBundle\Searchable;
-use App\Entity\Post;
 use App\Entity\Thread;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ThreadNormalizer implements NormalizerInterface
 {
+    private $purifier;
+
+    public function __construct(\HTMLPurifier $purifier)
+    {
+        $this->purifier = $purifier;
+    }
+
     public function normalize($object, $format = null, array $context = [])
     {
         $thread = $object;
 
         $posts = [];
-        /**
-         * @var Thread
-         * @var Post   $post
-         */
-        foreach ($thread->getPosts() as $post) {
-            $posts[] = $post->getMessage();
+        if (0 !== $thread->getPosts()->count()) {
+            foreach ($thread->getPosts() as $post) {
+                $posts[] = $this->purifier->purify($post->getMessage());
+            }
+        } else {
+            $posts[] = $this->purifier->purify($thread->getFirstPost()->getMessage());
         }
 
         return [

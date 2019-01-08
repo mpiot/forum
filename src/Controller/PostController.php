@@ -40,15 +40,14 @@ class PostController extends AbstractController
     public function new(Category $category, Thread $thread, Request $request): Response
     {
         $post = new Post();
-        $post->setThread($thread);
 
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($post);
+            $thread->addPost($post);
 
+            $em = $this->getDoctrine()->getManager();
             $em->flush();
 
             return $this->redirectToRoute('thread_show', [
@@ -110,8 +109,9 @@ class PostController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+            $thread->removePost($post);
+
             $em = $this->getDoctrine()->getManager();
-            $em->remove($post);
             $em->flush();
 
             $this->addFlash('success', 'The post as been successfully deleted.');
