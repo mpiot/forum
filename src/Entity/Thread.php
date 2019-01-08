@@ -184,6 +184,9 @@ class Thread
 
             // Define the new post as last post
             $this->lastPost = $post;
+
+            // Change the counter
+            $this->increaseNumberPosts(1);
         }
 
         return $this;
@@ -194,10 +197,13 @@ class Thread
         if ($this->posts->contains($post)) {
             $this->posts->removeElement($post);
 
-            // IS this post the last post ? If yes remove it as last post
+            // Is this post the last post ? If yes remove it as last post
             if ($this->lastPost->getId() === $post->getId()) {
                 $this->lastPost = $this->posts->last();
             }
+
+            // Change the counter
+            $this->decreaseNumberPosts(1);
         }
 
         return $this;
