@@ -19,7 +19,6 @@
 namespace App\Serializer\Normalizer;
 
 use Algolia\SearchBundle\Searchable;
-use App\Entity\Post;
 use App\Entity\Thread;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
