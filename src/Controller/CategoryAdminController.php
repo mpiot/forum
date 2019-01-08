@@ -20,6 +20,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
+use App\Repository\CategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,13 +36,12 @@ class CategoryAdminController extends AbstractController
     /**
      * @Route("/", name="category_admin_index", methods="GET")
      */
-    public function index(): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('App:Category');
-        $rootNode = $repo->find(1);
-        $categories = $repo->getNodesHierarchy($rootNode);
-        $categories = $repo->buildTreeArray($categories);
+        $rootNode = $categoryRepository->findOneBy(['title' => 'app_root_category']);
+        dump($rootNode);
+
+        $categories = $categoryRepository->childrenHierarchy($rootNode);
 
         return $this->render('category_admin/index.html.twig', ['categories' => $categories]);
     }
