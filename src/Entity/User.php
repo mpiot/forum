@@ -34,6 +34,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class User implements UserInterface, \Serializable
 {
+    const ROLE_DEFAULT = 'ROLE_USER';
+
     use TimestampableEntity;
 
     /**
@@ -186,10 +188,48 @@ class User implements UserInterface, \Serializable
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        // guarantee every user at least has a default role
+        $roles[] = self::ROLE_DEFAULT;
 
         return array_unique($roles);
+    }
+
+    public function addRole(string $role): UserInterface
+    {
+        $role = mb_strtoupper($role);
+
+        if (self::ROLE_DEFAULT === $role) {
+            return $this;
+        }
+
+        if (!\in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): UserInterface
+    {
+        $role = mb_strtoupper($role);
+
+        if (false !== $key = array_search($role, $this->roles, true)) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+
+        return $this;
+    }
+
+    public function hasRole(string $role): bool
+    {
+        $role = mb_strtoupper($role);
+
+        if (false === array_search($role, $this->getRoles(), true)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function setRoles(array $roles): self

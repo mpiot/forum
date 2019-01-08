@@ -95,4 +95,40 @@ class UserManager
     {
         $user->setConfirmationToken(null);
     }
+
+    public function addRole($email, $role)
+    {
+        $user = $this->findUserByEmail($email);
+
+        if (!$user) {
+            throw new \InvalidArgumentException(sprintf('User identified by "%s" email does not exist.', $email));
+        }
+
+        if ($user->hasRole($role)) {
+            return false;
+        }
+
+        $user->addRole($role);
+        $this->updateUser($user);
+
+        return true;
+    }
+
+    public function removeRole($email, $role)
+    {
+        $user = $this->findUserByEmail($email);
+
+        if (!$user) {
+            throw new \InvalidArgumentException(sprintf('User identified by "%s" email does not exist.', $email));
+        }
+
+        if (!$user->hasRole($role)) {
+            return false;
+        }
+
+        $user->removeRole($role);
+        $this->updateUser($user);
+
+        return true;
+    }
 }
