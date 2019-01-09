@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_category_breadcrumb.html.twig' as breadcrumb %}
 
-{% block title %}New post{% endblock %}
+{% block title %}{{ thread.subject }}{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}

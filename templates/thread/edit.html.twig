@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% import '_category_breadcrumb.html.twig' as breadcrumb %}
 
-{% block title %}New post{% endblock %}
+{% block title %}Edit thread{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
     {{ breadcrumb.categoryBreadcrumb(category) }}
-    <li class="breadcrumb-item active">New post</li>
+    <li class="breadcrumb-item active">Edit thread</li>
 {% endblock %}
 
 {% block body %}
