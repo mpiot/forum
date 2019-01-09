@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item">Administration</li>
+    <li class="breadcrumb-item"><a href="{{ path('user_admin_index') }}">User</a></li>
+    <li class="breadcrumb-item active">Edit</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Edit User</h1>
+
+    {{ include('user_admin/_form.html.twig', {'button_label': 'Update'}) }}
+{% endblock %}
