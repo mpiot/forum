@@ -39,7 +39,6 @@ class CategoryAdminController extends AbstractController
     public function index(CategoryRepository $categoryRepository): Response
     {
         $rootNode = $categoryRepository->findOneBy(['title' => 'app_root_category']);
-        dump($rootNode);
 
         $categories = $categoryRepository->childrenHierarchy($rootNode);
 
@@ -94,6 +93,12 @@ class CategoryAdminController extends AbstractController
      */
     public function delete(Request $request, Category $category): Response
     {
+        if (null !== $category->getLastActiveThread()) {
+            $this->addFlash('danger', 'You can\'t delete this category, it contains Threads.');
+
+            return $this->redirectToRoute('category_admin_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($category);
