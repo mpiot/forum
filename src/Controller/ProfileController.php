@@ -18,10 +18,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\DeleteAccountType;
 use App\Form\ProfileType;
 use App\Service\UserManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,24 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class ProfileController extends AbstractController
 {
+    /**
+     * @Route("/profile/{id}-{pseudo}", name="profile_public_show", methods="GET")
+     * @Entity("lastThreads", class="App\Entity\Thread", expr="repository.findLastUserThreads(id)")
+     * @Entity("lastPosts", class="App\Entity\Post", expr="repository.findLastUserPosts(id)")
+     * @Entity("nbThreads", class="App\Entity\Thread", expr="repository.countUserThreads(id)")
+     * @Entity("nbPosts", class="App\Entity\Post", expr="repository.countUserPosts(id)")
+     */
+    public function showPublic(User $user, array $lastThreads, array $lastPosts, int $nbThreads, int $nbPosts): Response
+    {
+        return $this->render('profile/show_public.html.twig', [
+            'user' => $user,
+            'lastThreads' => $lastThreads,
+            'lastPosts' => $lastPosts,
+            'nbThreads' => $nbThreads,
+            'nbPosts' => $nbPosts,
+        ]);
+    }
+
     /**
      * @Route("/my-profile", name="profile_show", methods="GET")
      */

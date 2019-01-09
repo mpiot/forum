@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.pseudo }} profile{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">{{ user.pseudo }} profile</li>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-2 text-sm-center">
+            {% if user.imageName is not null %}
+                <img class="user-profile-picture" src="{{ vich_uploader_asset(user, 'imageFile') }}" alt="{{ user.pseudo }}" />
+            {% else %}
+                <span class="user-profile-picture">{{ user.pseudo|slice(0, 2)|upper }}</span>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-10">
+            <h3>{{ user.pseudo }}</h3>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Stats
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Thread number: {{ nbThreads }}</li>
+                    <li class="list-group-item">Post number: {{ nbPosts }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Last threads
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for thread in lastThreads %}
+                    <li class="list-group-item">
+                        <a href="{{ path('thread_show', { 'categorySlug': thread.category.slug, 'id': thread.id, 'slug': thread.slug }) }}">{{ thread.subject }}</a>
+                    </li>
+                    {% else %}
+                        <li class="list-group-item">The user have no create thread yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Last posts
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for post in lastPosts %}
+                        <li class="list-group-item">
+                            <a href="{{ path('thread_show', { 'categorySlug': post.thread.category.slug, 'id': post.thread.id, 'slug': post.thread.slug }) }}">
+                                {{ post.thread.subject }} - {{ post.createdAt|date('d/m/Y H:i:s') }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">The user have no create post yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

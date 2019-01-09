@@ -39,6 +39,36 @@ class ThreadRepository extends ServiceEntityRepository
         parent::__construct($registry, Thread::class);
     }
 
+    public function findLastUserThreads(int $user, int $nbResults = 5)
+    {
+        $query = $this->createQueryBuilder('thread')
+            ->innerJoin('thread.createdBy', 'user')
+            ->innerJoin('thread.category', 'category')
+                ->addSelect('category')
+            ->where('user.id = :user')
+            ->setParameter('user', $user)
+            ->orderBy('thread.createdAt', 'DESC')
+            ->setFirstResult(0)
+            ->setMaxResults($nbResults)
+            ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
+
+    public function countUserThreads(int $user)
+    {
+        $query = $this->createQueryBuilder('thread')
+            ->select('COUNT(thread)')
+            ->innerJoin('thread.createdBy', 'user')
+            ->where('user.id = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+        ;
+
+        return $query->getSingleScalarResult();
+    }
+
     public function findForCategoryShow(Category $category, int $page = 1)
     {
         $query = $this->createQueryBuilder('thread')
