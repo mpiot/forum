@@ -19,6 +19,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,6 +34,9 @@ class ProfileType extends AbstractType
         $builder
             ->add('pseudo', TextType::class)
             ->add('email', EmailType::class)
+            ->add('signature', CKEditorType::class, [
+                'purify_html' => true,
+            ])
             ->add('imageFile', VichImageType::class, [
                 'label' => 'Profile image',
                 'required' => false,

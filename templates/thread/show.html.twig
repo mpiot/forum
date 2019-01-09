@@ -63,9 +63,14 @@
                         </div>
                     </div>
 
-                    <p>
-                        {{ post.message|raw }}
-                    </p>
+                    {{ post.message|raw }}
+
+                    {% if post.createdBy is not null %}
+                        <div>
+                            <hr>
+                            {{ post.createdBy.signature|purify }}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-3 border-left">
