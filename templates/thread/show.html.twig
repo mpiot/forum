@@ -82,7 +82,12 @@
                         {% endif %}
                     </div>
                     <div>
-                        {{ post.createdBy is not null ? post.createdBy.pseudo: 'Anonymous' }}
+                        {% if post.createdBy is not null %}
+                            {% set user = post.createdBy %}
+                            <a href="{{ path('profile_public_show', { 'id': user.id, 'pseudo': user.pseudo }) }}">{{ user.pseudo }}</a>
+                        {% else %}
+                            Anonymous
+                        {% endif %}
                     </div>
                 </div>
             </div>

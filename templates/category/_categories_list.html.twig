@@ -40,7 +40,13 @@
                                 <a href="{{ path('thread_show', { 'categorySlug': subCategory.lastActiveThread.category.slug, 'id': subCategory.lastActiveThread.id, 'slug': subCategory.lastActiveThread.slug }) }}">
                                     {{ subCategory.lastActiveThread.subject|truncate(20) }}
                                 </a><br>
-                                by {{ subCategory.lastActiveThread.lastPost.createdBy is not null ? subCategory.lastActiveThread.lastPost.createdBy.pseudo: 'Anonymous' }}<br>
+                                {% set user = subCategory.lastActiveThread.lastPost.createdBy %}
+                                {% if user is not null %}
+                                    by <a href="{{ path('profile_public_show', { 'id': user.id, 'pseudo': user.pseudo }) }}">{{ user.pseudo }}</a>
+                                {% else %}
+                                    by Anonymous
+                                {% endif %}
+
                                 at {{ subCategory.lastActiveThread.lastPost.createdAt|date('d/m/Y H:i') }}
                             {% else %}
                                 No thread

@@ -19,6 +19,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -36,6 +37,38 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    public function findLastUserPosts(int $user, int $nbResults = 5)
+    {
+        $query = $this->createQueryBuilder('post')
+            ->innerJoin('post.createdBy', 'user')
+            ->innerJoin('post.thread', 'thread')
+                ->addSelect('thread')
+            ->innerJoin('thread.category', 'category')
+                ->addSelect('category')
+            ->where('user.id = :user')
+            ->setParameter('user', $user)
+            ->orderBy('post.createdAt', 'DESC')
+            ->setFirstResult(0)
+            ->setMaxResults($nbResults)
+            ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
+
+    public function countUserPosts(int $user)
+    {
+        $query = $this->createQueryBuilder('post')
+            ->select('COUNT(post)')
+            ->innerJoin('post.createdBy', 'user')
+            ->where('user.id = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+        ;
+
+        return $query->getSingleScalarResult();
     }
 
     public function findForShow(int $id, int $page = 1)
