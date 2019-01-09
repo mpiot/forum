@@ -111,6 +111,11 @@ class User implements UserInterface, \Serializable
      */
     private $imageSize;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $signature;
+
     public function __construct()
     {
         $this->activated = false;
@@ -351,5 +356,17 @@ class User implements UserInterface, \Serializable
     public function getImageSize(): ?int
     {
         return $this->imageSize;
+    }
+
+    public function getSignature(): ?string
+    {
+        return $this->signature;
+    }
+
+    public function setSignature(?string $signature): self
+    {
+        $this->signature = $signature;
+
+        return $this;
     }
 }
