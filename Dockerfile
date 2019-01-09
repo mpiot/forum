@@ -16,7 +16,7 @@ ARG APCU_VERSION
 
 # Used for the ICU compilation
 ENV PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"
-ENV APP_VERSION=0.0.0
+ENV APP_VERSION=0.0.1
 
 WORKDIR /app
 
