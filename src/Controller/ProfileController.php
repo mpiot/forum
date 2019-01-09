@@ -46,7 +46,7 @@ class ProfileController extends AbstractController
             'lastThreads' => $lastThreads,
             'lastPosts' => $lastPosts,
             'nbThreads' => $nbThreads,
-            'nbPosts' => $nbPosts
+            'nbPosts' => $nbPosts,
         ]);
     }
 
