@@ -25,10 +25,12 @@ use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Tree\Traits\NestedSetEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @UniqueEntity(fields={"title"})
  * @ORM\HasLifecycleCallbacks()
  */
 class Category
