@@ -26,6 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ProfileController extends AbstractController
 {
@@ -83,7 +84,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/my-profile/delete", name="profile_delete", methods="GET|POST")
      */
-    public function delete(Request $request, UserManager $userManager): Response
+    public function delete(Request $request, UserManager $userManager, TokenStorageInterface $tokenStorage): Response
     {
         $user = $this->getUser();
         $form = $this->createForm(DeleteAccountType::class, $user);
@@ -93,6 +94,10 @@ class ProfileController extends AbstractController
             $userManager->deleteUser($user);
 
             $this->addFlash('success', 'Your profile has been successfully deleted.');
+
+            // To avoid an error with the Session
+            $tokenStorage->setToken(null);
+            $request->getSession()->invalidate();
 
             return $this->redirectToRoute('category_index');
         }
