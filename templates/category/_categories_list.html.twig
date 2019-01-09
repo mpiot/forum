@@ -42,9 +42,9 @@
                                 </a><br>
                                 {% set user = subCategory.lastActiveThread.lastPost.createdBy %}
                                 {% if user is not null %}
-                                    by <a href="{{ path('profile_public_show', { 'id': user.id, 'pseudo': user.pseudo }) }}">{{ user.pseudo }}</a>
+                                    by <a href="{{ path('profile_public_show', { 'id': user.id, 'pseudo': user.pseudo }) }}">{{ user.pseudo }}</a><br>
                                 {% else %}
-                                    by Anonymous
+                                    by Anonymous<br>
                                 {% endif %}
 
                                 at {{ subCategory.lastActiveThread.lastPost.createdAt|date('d/m/Y H:i') }}
