@@ -16,7 +16,7 @@ ARG APCU_VERSION
 
 # Used for the ICU compilation
 ENV PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"
-ENV APP_VERSION=0.0.1
+ENV APP_VERSION=0.0.0
 
 WORKDIR /app
 
@@ -146,7 +146,7 @@ RUN set -ex; \
 #####################################
 ##       PROD ASSETS BUILDER       ##
 #####################################
-FROM node:${NODE_VERSION}-jessie as assets-builder
+FROM node:${NODE_VERSION} as assets-builder
 
 COPY . /app
 WORKDIR /app
