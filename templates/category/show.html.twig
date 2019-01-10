@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% import '_category_breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}{{ category.title }} - {{ parent() }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category, true) }}
+{% endblock %}
+
+{% block body %}
+    <div class="row my-3">
+        {% if false == category.hasChildren and is_granted('ROLE_USER') %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_new', { 'slug': category.slug }) }}">
+                    <span class="fa fa-plus"></span> New post
+                </a>
+            </div>
+        {% endif %}
+
+        {% if threads.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(threads, 'app_pagination', {routeName: 'category_show', routeParams: { 'slug': category.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if false == category.hasChildren %}
+                {{ include('category/_thread_list.html.twig') }}
+            {% else %}
+                {{ include('category/_categories_list.html.twig') }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row my-3">
+        {% if false == category.hasChildren and is_granted('ROLE_USER') %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_new', { 'slug': category.slug }) }}">
+                    <span class="fa fa-plus"></span> New post
+                </a>
+            </div>
+        {% endif %}
+
+        {% if threads.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(threads, 'app_pagination', {routeName: 'category_show', routeParams: { 'slug': category.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
+{% endblock %}

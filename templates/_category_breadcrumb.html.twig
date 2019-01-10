@@ -1,0 +1,13 @@
+{% macro categoryBreadcrumb(category, lastActive = false) %}
+    {% import _self as breadcrumb %}
+
+    {% if category.parent is not null and category.parent.isSubCategory %}
+        {{ breadcrumb.categoryBreadcrumb(category.parent) }}
+
+        {% if true == lastActive%}
+            <li class="breadcrumb-item active">{{ category.title }}</li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{{ path('category_show', { 'slug': category.slug }) }}">{{ category.title }}</a></li>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

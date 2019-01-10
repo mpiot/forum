@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My profile{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">My profile</li>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-2 text-sm-center">
+            {% if app.user.imageName is not null %}
+                <img class="user-profile-picture" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="{{ app.user.pseudo }}" />
+            {% else %}
+                <span class="user-profile-picture">{{ app.user.pseudo|slice(0, 2)|upper }}</span>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-10">
+            <h3>{{ app.user.pseudo }} <small>{{ app.user.email }}</small></h3>
+
+            <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-secondary" href="{{ path('profile_edit_password') }}">
+                    <span class="fas fa-key" aria-hidden="true"></span> Change password
+                </a>
+
+                <a class="btn btn-warning" href="{{ path('profile_edit') }}">
+                    <span class="fas fa-pencil-alt" aria-hidden="true"></span> Edit
+                </a>
+
+                <a class="btn btn-danger" href="{{ path('profile_delete') }}">
+                    <span class="fas fa-trash-alt" aria-hidden="true"></span> Delete
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

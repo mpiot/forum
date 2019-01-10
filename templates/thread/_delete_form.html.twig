@@ -1,0 +1,14 @@
+<form class="d-inline" method="post" action="{{ path('thread_delete', {'categorySlug': category.slug, 'id': thread.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ thread.id) }}">
+
+    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+        {% block buttons %}
+            {% if is_granted('DELETE', thread) %}
+                <button class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            {% endif %}
+        {% endblock %}
+    </div>
+</form>

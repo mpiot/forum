@@ -1,0 +1,15 @@
+parameters:
+    # Adds a fallback APP_ENV if the env var is not set.
+    # This allows you to run cache:warmup even if your
+    # environment variables are not available yet.
+    # You should not need to change this value.
+    env(APP_VERSION): ''
+
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_4_layout.html.twig'
+    globals:
+        app_version: '%env(APP_VERSION)%'

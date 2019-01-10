@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete my account{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">My profile</a></li>
+    <li class="breadcrumb-item">Delete my account</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Delete my account</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.currentPassword) }}
+        {{ form_rest(form) }}
+
+        <button class="btn">Delete my account</button>
+    {{ form_end(form) }}
+
+{% endblock %}

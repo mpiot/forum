@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% import 'category_admin/_category_tree.html.twig' as tree %}
+
+{% block title %}Category index{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item">Administration</li>
+    <li class="breadcrumb-item active">Category</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Category index</h1>
+
+    <div class="row mb-3">
+        <div class="col">
+            <a class="btn btn-primary" href="{{ path('category_admin_new') }}">
+                <i class="fas fa-plus"></i> Create new
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="sortable">
+                {{ tree.categoryTree(categories) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Category{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item">Administration</li>
+    <li class="breadcrumb-item"><a href="{{ path('category_admin_index') }}">Category</a></li>
+    <li class="breadcrumb-item active">New category</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Create new Category</h1>
+
+    {{ include('category_admin/_form.html.twig') }}
+{% endblock %}

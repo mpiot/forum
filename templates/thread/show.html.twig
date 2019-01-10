@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+{% import '_category_breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}{{ thread.subject }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category) }}
+    <li class="breadcrumb-item active">{{ thread.subject }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="row my-3">
+        {% if is_granted("ROLE_USER") %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                    <span class="fas fa-reply"></span> Reply
+                </a>
+            </div>
+        {% endif %}
+
+        {% if posts.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
+
+    {% for post in posts %}
+        <div class="jumbotron p-3">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col">
+                            {% if false == post.isMainPost %}Re: {% endif %}{{ post.thread.subject }}<br>
+                            {{ post.createdAt|date('d/m/Y H:i') }}
+                        </div>
+
+                        <div class="col text-right">
+                            {% if true == post.isMainPost %}
+                                {% embed 'thread/_delete_form.html.twig' %}
+                                    {% block buttons %}
+                                        {% if is_granted('UPDATE', thread) %}
+                                            <a class="btn btn-warning" href="{{ path('thread_edit', { 'categorySlug': category.slug, 'id': post.thread.id, 'slug': post.thread.slug }) }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        {% endif %}
+                                        {{ parent() }}
+                                    {% endblock %}
+                                {% endembed %}
+                            {% else %}
+                                {% embed 'post/_delete_form.html.twig' %}
+                                    {% block buttons %}
+                                        {% if is_granted('UPDATE', post) %}
+                                            <a class="btn btn-warning" href="{{ path('post_edit', {'categorySlug': category.slug, 'threadId': thread.id, 'threadSlug': thread.slug, 'id': post.id }) }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        {% endif %}
+                                        {{ parent() }}
+                                    {% endblock %}
+                                {% endembed %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {{ post.message|raw }}
+
+                    {% if post.createdBy is not null %}
+                        <div>
+                            <hr>
+                            {{ post.createdBy.signature|purify }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-3 border-left">
+                    <div class="text-center mb-3">
+                        {% if post.createdBy is not null and post.createdBy.imageName is not null %}
+                            <img class="user-profile-picture" src="{{ vich_uploader_asset(post.createdBy, 'imageFile') }}" alt="{{ post.createdBy.pseudo }}" />
+                        {% else %}
+                            <span class="user-profile-picture">{{ post.createdBy is not null ? post.createdBy.pseudo|slice(0, 2)|upper : 'AN' }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if post.createdBy is not null %}
+                            {% set user = post.createdBy %}
+                            <a href="{{ path('profile_public_show', { 'id': user.id, 'pseudo': user.pseudo }) }}">{{ user.pseudo }}</a>
+                        {% else %}
+                            Anonymous
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="row my-3">
+        {% if is_granted("ROLE_USER") %}
+            <div class="col">
+                <a class="btn btn-primary" href="{{ path('thread_reply', { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }) }}">
+                    <span class="fas fa-reply"></span> Reply
+                </a>
+            </div>
+        {% endif %}
+
+        {% if posts.haveToPaginate %}
+            <nav class="col d-flex">
+                {{ pagerfanta(posts, 'app_pagination', {routeName: 'thread_show', routeParams: { 'categorySlug': category.slug, 'id': thread.id, 'slug': thread.slug }}) }}
+            </nav>
+        {% endif %}
+    </div>
+{% endblock %}

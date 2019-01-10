@@ -1,0 +1,23 @@
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+
+body {
+  padding-top: 4.5rem;
+}
+
+.navbar small {
+  font-size: 60%;
+}
+
+.user-profile-picture {
+  background-color: $blue;
+  color: $white;
+  font-weight: bold;
+  font-size: 4em;
+  line-height: 2em;
+  height: 2em;
+  width: 2em;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+}

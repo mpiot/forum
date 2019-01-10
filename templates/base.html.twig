@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        <title>{% block title %}Forum{% endblock %}</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="{{ path("category_index") }}">Forum <small>{{ app_version }}</small></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path("category_index") }}"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                </ul>
+
+                {%  include 'search/_quick_search_form.html.twig' with { 'display': 'navbar' } %}
+                <ul class="navbar-nav">
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My account</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                            <h6 class="dropdown-header">{{ app.user.pseudo }}</h6>
+                            {% if is_granted("ROLE_ADMIN") %}
+                                <a class="dropdown-item" href="{{ path('category_admin_index') }}">Categories</a>
+                                <a class="dropdown-item" href="{{ path('user_admin_index') }}">Users</a>
+                                <div class="dropdown-divider"></div>
+                            {% endif %}
+                            <a class="dropdown-item" href="{{ path('profile_show') }}">My profile</a>
+                            <a class="dropdown-item" href="{{ logout_url('main') }}">Logout</a>
+                        </div>
+                    </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path("login") }}">Log in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path("registration") }}">Sign in</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="container">
+            {# List flashes messages #}
+            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible d-print-none" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>{{ label|trans|capitalize }}!</strong> {{ message|trans }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% block breadcrumb %}
+                        <li class="breadcrumb-item"><a href="{{ path('category_index') }}"><i class="fas fa-home"></i> Home</a></li>
+                    {% endblock %}
+                </ol>
+            </nav>
+
+            {% block body %}{% endblock %}
+        </main>
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+</html>

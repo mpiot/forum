@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% import '_category_breadcrumb.html.twig' as breadcrumb %}
+
+{% block title %}New thread{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ breadcrumb.categoryBreadcrumb(category) }}
+    <li class="breadcrumb-item active">New thread</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Create new post</h1>
+
+    {{ include('thread/_form.html.twig') }}
+{% endblock %}
