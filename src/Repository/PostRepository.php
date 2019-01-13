@@ -38,48 +38,51 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function findLastUserPosts(int $user, int $nbResults = 5)
+    public function findLastUserPosts(int $userId, int $nbResults = 5)
     {
-        $query = $this->createQueryBuilder('post')
-            ->innerJoin('post.createdBy', 'user')
-            ->innerJoin('post.thread', 'thread')
-                ->addSelect('thread')
-            ->innerJoin('thread.category', 'category')
-                ->addSelect('category')
-            ->where('user.id = :user')
-            ->setParameter('user', $user)
-            ->orderBy('post.createdAt', 'DESC')
-            ->setFirstResult(0)
-            ->setMaxResults($nbResults)
-            ->getQuery()
-        ;
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+        'SELECT p, t, c
+              FROM App\Entity\Post p
+              INNER JOIN p.createdBy u
+              INNER JOIN p.thread t
+              INNER JOIN t.category c
+              WHERE u.id = :userId
+              ORDER BY p.createdAt DESC'
+        )->setParameter('userId', $userId)
+        ->setFirstResult(0)
+        ->setMaxResults($nbResults);
 
         return $query->getResult();
     }
 
-    public function countUserPosts(int $user)
+    public function countUserPosts(int $userId)
     {
-        $query = $this->createQueryBuilder('post')
-            ->select('COUNT(post)')
-            ->innerJoin('post.createdBy', 'user')
-            ->where('user.id = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-        ;
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+            'SELECT COUNT(p)
+            FROM App\Entity\Post p
+            INNER JOIN p.createdBy u
+            WHERE u.id = :userId'
+        )->setParameter('userId', $userId);
 
         return $query->getSingleScalarResult();
     }
 
-    public function findForShow(int $id, int $page = 1)
+    public function findForShow(int $threadId, int $page = 1)
     {
-        $query = $this->createQueryBuilder('post')
-            ->leftJoin('post.thread', 'thread')
-            ->leftJoin('post.createdBy', 'post_created_by')
-                ->addSelect('post_created_by')
-            ->where('thread.id = :id')
-                ->setParameter('id', $id)
-            ->orderBy('post.createdAt', 'ASC')
-            ->getQuery();
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+        'SELECT p
+              FROM App\Entity\Post p
+              INNER JOIN p.thread t
+              LEFT JOIN p.createdBy u
+              WHERE t.id = :threadId
+              ORDER BY p.createdAt ASC'
+        )->setParameter('threadId', $threadId);
 
         return $this->createPaginator($query, $page);
     }
