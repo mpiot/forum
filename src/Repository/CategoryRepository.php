@@ -40,26 +40,22 @@ class CategoryRepository extends NestedTreeRepository
 
     public function findForCategoryIndex()
     {
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.parent', 'parent')
-            ->innerJoin('c.children', 'children')
-                ->addSelect('children')
-            ->leftJoin('children.children', 'sub_children')
-                ->addSelect('sub_children')
-            ->leftJoin('children.lastActiveThread', 'last_active_thread')
-                ->addSelect('last_active_thread')
-            ->leftJoin('last_active_thread.category', 'last_active_thread_category')
-                ->addSelect('last_active_thread_category')
-            ->leftJoin('last_active_thread.lastPost', 'last_post')
-                ->addSelect('last_post')
-            ->leftJoin('last_post.createdBy', 'last_post_created_by')
-                ->addSelect('last_post_created_by')
-            ->where('c.level = 1')
-            ->orderBy('c.left', 'ASC')
-            ->addOrderBy('children.left', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+            'SELECT c, children, sub_children, last_active_thread, last_active_thread_category, last_post, last_post_created_by
+              FROM App\Entity\Category c
+              INNER JOIN c.children children
+              LEFT JOIN children.children sub_children
+              LEFT JOIN children.lastActiveThread last_active_thread
+              LEFT JOIN last_active_thread.category last_active_thread_category
+              LEFT JOIN last_active_thread.lastPost last_post
+              LEFT JOIN last_post.createdBy last_post_created_by
+              WHERE c.level = 1
+              ORDER BY c.left ASC, children.left ASC'
+        );
+
+        return $query->getResult();
     }
 
     public function findForCategoryShow(string $slug)
