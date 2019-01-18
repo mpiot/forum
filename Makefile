@@ -137,8 +137,8 @@ up:
 	$(DOCKER_COMPOSE) up -d --remove-orphans
 
 perm:
-	$(EXEC) chmod -R 777 var files public/build node_modules vendor
-	$(EXEC) chown -R www-data:root var files public/build node_modules vendor
+	$(EXEC) chmod -R 777 var public/build node_modules vendor
+	$(EXEC) chown -R www-data:root var public/build node_modules vendor
 
 docker-compose.override.yml:
 ifneq ($(wildcard docker-compose.override.yml),docker-compose.override.yml)
