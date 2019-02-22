@@ -1,9 +1,9 @@
-ARG NODE_VERSION=11.6.0
-ARG COMPOSER_VERSION=1.8.0
-ARG PHP_VERSION=7.2.13
+ARG NODE_VERSION=11.10.0
+ARG COMPOSER_VERSION=1.8.4
+ARG PHP_VERSION=7.3.2
 ARG ICU_VERSION=63.1
-ARG APCU_VERSION=5.1.16
-ARG XDEBUG_VERSION=2.6.1
+ARG APCU_VERSION=5.1.17
+ARG XDEBUG_VERSION=2.7.0RC2
 
 
 #####################################
@@ -15,18 +15,17 @@ ARG ICU_VERSION
 ARG APCU_VERSION
 
 # Used for the ICU compilation
-ENV PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"
-ENV APP_VERSION=0.0.0
+ENV APP_VERSION=0.1.0
 
 WORKDIR /app
 
 # Install paquet requirements
-RUN set -ex; \
+RUN export PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"; \
+    set -ex; \
     # Install required system packages
     apt-get update; \
     apt-get install -qy --no-install-recommends \
-            zlib1g-dev \
-            git \
+            libzip-dev \
     ; \
     # Compile ICU (required by intl php extension)
     curl -L -o /tmp/icu.tar.gz http://download.icu-project.org/files/icu4c/${ICU_VERSION}/icu4c-$(echo ${ICU_VERSION} | sed s/\\./_/g)-src.tgz; \
@@ -78,7 +77,7 @@ RUN { \
 RUN { \
         echo 'date.timezone = Europe/Paris'; \
         echo 'short_open_tag = off'; \
-        echo 'memory_limit = 8192M'; \
+        echo 'memory_limit = -1'; \
     } > /usr/local/etc/php/php-cli.ini
 
 CMD ["php-fpm"]
@@ -102,6 +101,7 @@ RUN set -ex; \
     apt-get update; \
     apt-get install -qy --no-install-recommends \
             unzip \
+            git \
     ; \
     # Clean aptitude cache and tmp directory
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*;

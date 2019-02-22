@@ -39,62 +39,71 @@ class ThreadRepository extends ServiceEntityRepository
         parent::__construct($registry, Thread::class);
     }
 
-    public function findLastUserThreads(int $user, int $nbResults = 5)
+    public function findLastUserThreads(int $userId, int $nbResults = 5)
     {
-        $query = $this->createQueryBuilder('thread')
-            ->innerJoin('thread.createdBy', 'user')
-            ->innerJoin('thread.category', 'category')
-                ->addSelect('category')
-            ->where('user.id = :user')
-            ->setParameter('user', $user)
-            ->orderBy('thread.createdAt', 'DESC')
-            ->setFirstResult(0)
-            ->setMaxResults($nbResults)
-            ->getQuery()
-        ;
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+        'SELECT t, c
+              FROM App\Entity\Thread t
+              INNER JOIN t.createdBy u
+              INNER JOIN t.category c
+              WHERE u.id = :userId
+              ORDER BY t.createdAt DESC'
+        )
+        ->setParameter('userId', $userId)
+        ->setFirstResult(0)
+        ->setMaxResults($nbResults);
 
         return $query->getResult();
     }
 
-    public function countUserThreads(int $user)
+    public function countUserThreads(int $userId)
     {
-        $query = $this->createQueryBuilder('thread')
-            ->select('COUNT(thread)')
-            ->innerJoin('thread.createdBy', 'user')
-            ->where('user.id = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-        ;
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+        'SELECT COUNT(t)
+              FROM App\Entity\Thread t
+              INNER JOIN t.createdBy u
+              WHERE u.id = :userId'
+        )->setParameter('userId', $userId);
 
         return $query->getSingleScalarResult();
     }
 
     public function findForCategoryShow(Category $category, int $page = 1)
     {
-        $query = $this->createQueryBuilder('thread')
-            ->leftJoin('thread.posts', 'posts')
-                ->addSelect('posts')
-            ->leftJoin('thread.category', 'category')
-            ->leftJoin('thread.lastPost', 'last_post')
-            ->orderBy('last_post.createdAt', 'DESC')
-            ->where('category = :category')
-                ->setParameter('category', $category)
-            ->getQuery();
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+        'SELECT t, p
+              FROM App\Entity\Thread t
+              INNER JOIN t.posts p
+              INNER JOIN t.category c
+              INNER JOIN t.lastPost lastPost
+              WHERE c = :category
+              ORDER BY lastPost.createdAt DESC'
+        )->setParameter('category', $category);
 
         return $this->createPaginator($query, $page);
     }
 
     public function findBeforeLastThreadForCategory(Category $category)
     {
-        $query = $this->createQueryBuilder('thread')
-            ->innerJoin('thread.category', 'category')
-            ->innerJoin('thread.posts', 'posts')
-            ->where('category = :category')
-                ->setParameter('category', $category)
-            ->orderBy('posts.createdAt', 'DESC')
-            ->setFirstResult(1)
-            ->setMaxResults(1)
-            ->getQuery();
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(/* @lang DQL */
+            'SELECT t, c
+              FROM App\Entity\Thread t
+              INNER JOIN t.category c
+              INNER JOIN t.posts p
+              WHERE c = :category
+              ORDER BY p.createdAt DESC'
+        )
+        ->setParameter('category', $category)
+        ->setFirstResult(1)
+        ->setMaxResults(1);
 
         return $query->getOneOrNullResult();
     }

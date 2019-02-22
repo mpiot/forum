@@ -83,7 +83,7 @@ class AppFixtures extends Fixture
 
             $manager->persist($category);
 
-            if (array_key_exists('children', $categoryData)) {
+            if (\array_key_exists('children', $categoryData)) {
                 $this->addCategories($categoryData['children'], $manager, $category);
             }
         }
