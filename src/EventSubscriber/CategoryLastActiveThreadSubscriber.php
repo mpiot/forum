@@ -70,7 +70,7 @@ class CategoryLastActiveThreadSubscriber implements EventSubscriber
                 $changeSet = $this->uow->getEntityChangeSet($entity);
 
                 // Only when the category change
-                if (array_key_exists('category', $changeSet)) {
+                if (\array_key_exists('category', $changeSet)) {
                     $previousCategory = $changeSet['category'][0];
                     $newCategory = $changeSet['category'][1];
 
