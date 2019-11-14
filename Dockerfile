@@ -1,9 +1,9 @@
-ARG NODE_VERSION=11.10.0
-ARG COMPOSER_VERSION=1.8.4
-ARG PHP_VERSION=7.3.2
-ARG ICU_VERSION=63.1
 ARG APCU_VERSION=5.1.17
-ARG XDEBUG_VERSION=2.7.0RC2
+ARG COMPOSER_VERSION=1.8.6
+ARG ICU_VERSION=64.2
+ARG NODE_VERSION=12.4.0
+ARG PHP_VERSION=7.3.6
+ARG XDEBUG_VERSION=2.7.2
 
 
 #####################################
@@ -14,8 +14,7 @@ FROM php:${PHP_VERSION}-fpm as app
 ARG ICU_VERSION
 ARG APCU_VERSION
 
-# Used for the ICU compilation
-ENV APP_VERSION=0.2.0
+ENV APP_VERSION=0.0.0
 
 WORKDIR /app
 
@@ -101,7 +100,6 @@ ARG COMPOSER_VERSION
 ARG XDEBUG_VERSION
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV APP_ENV=dev
 
 # Install paquet requirements
 RUN set -ex; \
@@ -193,6 +191,7 @@ RUN set -ex; \
 
 # copy the Entrypoint
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN ["chmod", "+x", "/usr/local/bin/entrypoint.sh"]
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

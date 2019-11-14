@@ -32,9 +32,7 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (false === $user->isActivated()) {
-            throw new CustomUserMessageAuthenticationException(
-                'Your account must be activated.'
-            );
+            throw new CustomUserMessageAuthenticationException('Your account must be activated.');
         }
     }
 
